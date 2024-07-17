@@ -2,7 +2,7 @@
     <div class="container-md">
         <h2>Registrar usuario</h2>  
         <fieldset>
-            <form action="" class="" id="Formulario" @submit.prevent="submit">
+            <form id="Formulario">
                 <input type="hidden" id="txtIdUsuario" class="form-control" disabled v-model="form.IdUsuario">
                 <label for="txtUsuario" class="form-label">Usuario: </label>
                 <input type="text" v-model="form.Usuario" name="txtUsuario" id="txtUsuario" placeholder="Ingresar usuario..." class="form-control">
@@ -22,9 +22,11 @@
                 <br>
 
                 <div class="d-grid gap-2 d-md-block">
-                    <input type="submit" value="Enviar" class="btn btn-primary boton">
+                    <button type="submit" class="btn btn-primary boton " v-on:click="submit()">
+                        <i class="fa-solid fa-floppy-disk"></i> Enviar
+                    </button>
                     &nbsp;
-                    <input type="button" value="Limpiar" class="btn btn-secondary boton limpiar" v-on:click="limpiar">
+                    <input type="button" value="Limpiar" class="btn btn-secondary boton limpiar" v-on:click="limpiar(form.IdUsuario)">
                 </div>
             </form>
         </fieldset>
@@ -34,7 +36,7 @@
 <script >
 
 import { useRoute } from 'vue-router';
-import axios, { Axios } from 'axios';
+import { mostrarAlerta, enviarSolicitud } from '@/funciones';
 
 function limpiar(){
     const formulario = document.getElementById("Formulario")
@@ -46,6 +48,9 @@ function limpiar(){
         if(this.form.IdUsuario > -1){
             this.getUsuario();
         }
+        else{
+            this.form.IdUsuario = 0;
+        }
     },
     data(){
         return{
@@ -54,12 +59,20 @@ function limpiar(){
                 Usuario:'',
                 Clave:'',
                 Tipo:''
-            }
+            },
+            cargando: false
         }
     },
     methods:{
-        submit:function(){
-
+        submit:function(id){
+            //guardar
+            if(id != 0){
+                //Actualizar
+            }
+            else{
+                //Registrar
+                enviarSolicitud('POST', this.form, 'http://localhost/sistema/api/usuarios/create', 'Usuario registrado', '/listar_usuarios');
+            }
         },
         getUsuario(){
             //Metodo para obtener un estudiante enviado de la tabla 
