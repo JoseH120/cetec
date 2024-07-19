@@ -30,11 +30,11 @@
                                 <td v-text="(uss.Usuario)"></td>
                                 <td v-text="(uss.Tipo)"></td>
                                 <td>
-                                    <RouterLink :to="{path:'guardar_usuario/'+ uss.IdUsuario}"  class="btn btn-info">
+                                    <RouterLink :to="{path:'guardar_usuario/'+ uss.IdUsuario+'/1'}"  class="btn btn-info">
                                         <i class="fa-solid fa-eye"></i>
                                     </RouterLink>
                                     &nbsp;
-                                    <RouterLink :to="{path:'guardar_usuario/'+ uss.IdUsuario}"  class="btn btn-warning">
+                                    <RouterLink :to="{path:'guardar_usuario/'+uss.IdUsuario+'/2'}"  class="btn btn-warning">
                                         <i class="fa-solid fa-edit"></i>
                                     </RouterLink>
                                     &nbsp;

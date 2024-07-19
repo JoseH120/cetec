@@ -18,7 +18,7 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/guardar_usuario/:id?',
+      path: '/guardar_usuario/:id?/:case?',
       name: 'UsuarioSave',
       component: UsuarioSave
     },

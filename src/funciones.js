@@ -52,8 +52,14 @@ export  function enviarSolicitud(metodo, parametros = {}, url, mensaje, redict){
         data:parametros
     }).then(function(res){
         var estado = res.status;
-        if(estado == 200){
+        if(estado == 200 || estado == 201){
             mostrarAlerta(mensaje, 'success');
+            window.setTimeout(function(){
+                window.location.href=redict; 
+            }, 1000);
+        }
+        else if(estado == 400){
+            mostrarAlerta('No se pudo realizar la operacion', 'error');
             window.setTimeout(function(){
                 window.location.href=redict; 
             }, 1000);
@@ -71,15 +77,18 @@ export  function enviarSolicitud(metodo, parametros = {}, url, mensaje, redict){
                     window.location.href=redict; 
                 }, 1000);
             }
+            else if(error.response.status = 400){
+                mostrarAlerta('Error: '+error.message, 'error');
+            }
             else{
                 mostrarAlerta('Servidor no disponible', 'error');
             }  
           } 
           else if (error.request) {
-            mostrarAlerta('Error al eliminar', 'error');
+            mostrarAlerta('Error', 'error');
           } 
           else{
-            mostrarAlerta('Error al eliminar', 'error');
+            mostrarAlerta('Error', 'error');
           }
     });
 
