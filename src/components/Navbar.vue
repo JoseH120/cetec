@@ -29,6 +29,7 @@
           <Navlink path="/matricula/1" text="matricula" />
           <Navlink path="/my/index/11" text="Principal" />
           <Navlink path="/about" text="About" />
+          <Navlink path="/curso/5" text="curso" />
         </ul>
         <!-- Agregando nuevo elemento a la derecho -->
         <ul

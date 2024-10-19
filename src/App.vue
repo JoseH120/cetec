@@ -1,8 +1,7 @@
 <template>
   <Navbar :loggedIn="loggedIn"></Navbar>
-  <div class="container-fluid">
-    <RouterView></RouterView>
-  </div>
+  <RouterView></RouterView>
+
 </template>
 
 <script setup>
