@@ -21,8 +21,9 @@ const store = createStore({
       state.isLoggedIn = false;
       localStorage.removeItem("token");
       localStorage.removeItem("expires");
-      localStorage.removeItem("email");
-      localStorage.removeItem("IdUsuario");
+      localStorage.removeItem("idusuario");
+      localStorage.removeItem("usuario");
+      localStorage.removeItem("tipo");
       router.push({ name: "Signin" });
     },
   },

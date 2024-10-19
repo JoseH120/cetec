@@ -20,7 +20,22 @@
           <Navlink path="/signin" text="Inicia sesion" />
         </ul>
         <!-- Nav Items if loggedin  -->
-        <ul v-else class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul
+          v-else-if="loggedIn && user.tipo == 'ADMINISTRADOR'"
+          class="navbar-nav me-auto mb-2 mb-lg-0"
+        >
+          <Navlink path="/" text="home" />
+          <Navlink path="/listar_usuarios" text="Usuarios" />
+          <Navlink path="/listar_tutores" text="Tutores" />
+          <Navlink path="/listar_estudiantes" text="Estudiantes" />
+          <Navlink path="/listar_cursos" text="Cursos" />
+          <Navlink path="/about" text="About" />
+        </ul>
+        <!-- NAV PARA TUTORES -->
+        <ul
+          v-else-if="loggedIn && user.tipo == 'TUTOR'"
+          class="navbar-nav me-auto mb-2 mb-lg-0"
+        >
           <Navlink path="/" text="home" />
           <Navlink path="/listar_usuarios" text="Usuarios" />
           <Navlink path="/listar_tutores" text="Tutores" />
@@ -30,6 +45,16 @@
           <Navlink path="/my/index/11" text="Principal" />
           <Navlink path="/about" text="About" />
           <Navlink path="/curso/5" text="curso" />
+        </ul>
+        <!-- NAV PARA TUTORES -->
+        <ul
+          v-else-if="loggedIn && user.tipo == 'ESTUDIANTE'"
+          class="navbar-nav me-auto mb-2 mb-lg-0"
+        >
+          <Navlink path="/" text="home" />
+          <Navlink path="/my/index/11" text="Principal" />
+          <Navlink path="/curso/5" text="curso" />
+          <Navlink path="/about" text="About" />
         </ul>
         <!-- Agregando nuevo elemento a la derecho -->
         <ul
@@ -76,30 +101,40 @@
 <script setup>
 import Navlink from "@/components/Navlink2.vue";
 import store from "@/store/store";
-import { api } from "@/pluggins/axios";
-import { onUpdated } from "vue";
+import { onUpdated, reactive } from "vue";
 
 const props = defineProps({
   loggedIn: Boolean,
+});
+
+const user = reactive({
+  idusuario: null,
+  usuario: null,
+  tipo: null,
 });
 
 const logout = () => {
   store.dispatch("logout");
 };
 
-onUpdated(() => {
+const userInfo = () => {
   if (props.loggedIn) {
-    const email = localStorage.getItem("email");
-    api
-      .post("/usuarios/obtener", { email: email })
-      .then((respuesta) => {
-        localStorage.setItem("IdUsuario", respuesta.data.IdUsuario);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    user.idusuario = localStorage.getItem("idusuario");
+    user.usuario = localStorage.getItem("usuario");
+    user.tipo = localStorage.getItem("tipo");
+  } else {
+    user.idusuario = null;
+    user.usuario = null;
+    user.tipo = null;
   }
+};
+
+onUpdated(() => {
+  userInfo();
+  console.log(user.tipo);
 });
+
+userInfo();
 </script>
 
 <style scoped>

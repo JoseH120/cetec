@@ -26,6 +26,7 @@
                 id="clave"
                 class="form-control"
                 v-model="state.clave"
+                autocomplete="off"
               />
             </div>
 
@@ -76,7 +77,6 @@ const signin = () => {
     .post("/login", form, { auth })
     .then((res) => {
       state.msg = "You have been succesfully logged in";
-      localStorage.setItem("email", state.email);
       state.classAlert = "success";
       state.email = "";
       state.clave = "";
@@ -88,6 +88,9 @@ const signin = () => {
       const expireDate = new Date(now.getTime() + expiresMs);
       localStorage.setItem("token", state.token);
       localStorage.setItem("expires", expireDate);
+      localStorage.setItem("idusuario", res.data.idusuario);
+      localStorage.setItem("usuario", res.data.usuario);
+      localStorage.setItem("tipo", res.data.tipo);
       store.dispatch("login", expiresMs);
     })
     .catch((err) => {
