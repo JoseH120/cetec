@@ -54,7 +54,7 @@ getCurso(props.idCurso);
         <nav class="navegacion">
             <ul>
                 <li v-for="acti, i in actividades" :key="acti.IdActividad">
-                    <a href="/#10" class="bg-light">
+                    <a :href="('#'+acti.IdActividad)" class="bg-light">
                         <i class="fa-solid fa-greater-than"></i><span>{{ acti.Tema }}</span>
                     </a>
                 </li>

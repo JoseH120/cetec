@@ -1,6 +1,7 @@
 <script setup>
 
 import SideBar from '../components/SideBar.vue';
+import ActividadSave from '../actividades/ActividadSave.vue';
 import { useRoute } from "vue-router";
 import { api } from '@/pluggins/axios';
 import { reactive, ref } from 'vue';
@@ -33,6 +34,11 @@ const getActividades = async () =>{
     Actividades.value = (await respuesta).data;
 }
 
+const openModal = ()=>{
+    const windowBackground = document.getElementById('window-background');
+    windowBackground.style.display='flex'
+}
+
 getCurso(idCurso);
 getActividades();
 
@@ -42,12 +48,25 @@ getActividades();
 <template>
     <div class="Container">
         <SideBar class="box" :idCurso=idCurso />
+        <ActividadSave />
         <div class="contenido">
             <h2>Curso de {{ curso.NombreCurso }}</h2>
-            <section v-for="(act, i) in Actividades" :key="act.IdActividad" id=i >
+            <div>
+                <button class="open-button mb-2" id="open-button" @click="openModal">
+                    <i class="fa fa-plus" aria-hidden="true"></i> Actividad
+                </button>
+            </div>
+            
+            <section v-for="(act, i) in Actividades" :key="act.IdActividad" :id="(act.IdActividad)" >
                 <h3 v-text="(act.Tema)"></h3>
                 <p v-text="(act.Descripcion)"></p>
-                <p>{{ i }}</p>
+                <div class="acciones">
+                    <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                    <RouterLink :to="{ path: '/' }" class="btn btn-info">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </RouterLink>
+                </div>
+                
             </section>
         </div>
     </div>
@@ -71,6 +90,12 @@ getActividades();
     margin: 10px;
 }
 
+.acciones{
+    display: flex;
+    flex-direction: row-reverse;
+    margin-right: 10px;
+}
+
 h2, section{
     padding-left: 5%;
     padding-top: 10px;
@@ -82,4 +107,18 @@ section{
     border-radius: 30px;
     margin: 1px;
 }
+
+.open-button{
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color:#28a745;
+    color: #f7f9ff;
+    border: none;
+    transition: transfom .3 cubic-bezier(.36, .37, .76, .75);
+    cursor: pointer;
+}
+.open-button:active{
+    transform: scale(.95);
+}
+
 </style>

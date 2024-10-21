@@ -37,14 +37,8 @@
           class="navbar-nav me-auto mb-2 mb-lg-0"
         >
           <Navlink path="/" text="home" />
-          <Navlink path="/listar_usuarios" text="Usuarios" />
-          <Navlink path="/listar_tutores" text="Tutores" />
-          <Navlink path="/listar_estudiantes" text="Estudiantes" />
-          <Navlink path="/listar_cursos" text="Cursos" />
-          <Navlink path="/matricula/1" text="matricula" />
-          <Navlink path="/my/index/11" text="Principal" />
+          <Navlink path="/my/index/1" text="Principal" />
           <Navlink path="/about" text="About" />
-          <Navlink path="/curso/5" text="curso" />
         </ul>
         <!-- NAV PARA TUTORES -->
         <ul
@@ -52,8 +46,7 @@
           class="navbar-nav me-auto mb-2 mb-lg-0"
         >
           <Navlink path="/" text="home" />
-          <Navlink path="/my/index/11" text="Principal" />
-          <Navlink path="/curso/5" text="curso" />
+          <Navlink path="/my/index/1" text="Principal" />
           <Navlink path="/about" text="About" />
         </ul>
         <!-- Agregando nuevo elemento a la derecho -->
@@ -131,7 +124,6 @@ const userInfo = () => {
 
 onUpdated(() => {
   userInfo();
-  console.log(user.tipo);
 });
 
 userInfo();

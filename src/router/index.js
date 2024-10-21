@@ -77,6 +77,11 @@ const router = createRouter({
       name: "Curso",
       component: () => import("../views/curso/Curso.vue"),
     },
+    {
+      path: "/guardar_actividad",
+      name: "ActividadSave",
+      component: () => import("../views/actividades/ActividadSave.vue"),
+    },
   ],
 });
 
