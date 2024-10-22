@@ -37,7 +37,7 @@
           class="navbar-nav me-auto mb-2 mb-lg-0"
         >
           <Navlink path="/" text="home" />
-          <Navlink path="/my/index/1" text="Principal" />
+          <Navlink :path="`/my/index/${user.id}`" text="Principal" />
           <Navlink path="/about" text="About" />
         </ul>
         <!-- NAV PARA TUTORES -->
@@ -46,7 +46,7 @@
           class="navbar-nav me-auto mb-2 mb-lg-0"
         >
           <Navlink path="/" text="home" />
-          <Navlink path="/my/index/1" text="Principal" />
+          <Navlink :path="`/my/index/${user.id}`" text="Principal" />
           <Navlink path="/about" text="About" />
         </ul>
         <!-- Agregando nuevo elemento a la derecho -->
@@ -93,6 +93,7 @@
 
 <script setup>
 import Navlink from "@/components/Navlink2.vue";
+import { api } from "@/pluggins/axios";
 import store from "@/store/store";
 import { onUpdated, reactive } from "vue";
 
@@ -102,6 +103,7 @@ const props = defineProps({
 
 const user = reactive({
   idusuario: null,
+  id: null,
   usuario: null,
   tipo: null,
 });
@@ -115,10 +117,32 @@ const userInfo = () => {
     user.idusuario = localStorage.getItem("idusuario");
     user.usuario = localStorage.getItem("usuario");
     user.tipo = localStorage.getItem("tipo");
+    if (user.tipo != "ESTUDIANTE" && user.tipo != "TUTOR") {
+      user.id == 0;
+    } else if (user.tipo == "ESTUDIANTE") {
+      api
+        .get(`/estudiantes/getEstudiante/${user.idusuario}`)
+        .then((res) => {
+          user.id = res.data.idestudiante;
+        })
+        .catch(() => {
+          user.id = null;
+        });
+    } else if (user.tipo == "TUTOR") {
+      api
+        .get(`/tutores/getTutor/${user.idusuario}`)
+        .then((res) => {
+          user.id = res.data.idtutor;
+        })
+        .catch(() => {
+          user.id = null;
+        });
+    }
   } else {
     user.idusuario = null;
     user.usuario = null;
     user.tipo = null;
+    user.id = null;
   }
 };
 

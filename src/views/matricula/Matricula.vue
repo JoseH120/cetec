@@ -1,7 +1,7 @@
 <style scoped>
 </style>
 <template>
-  <EstudiantesModal v-if="mostrarModal" @close="toggleEstudiantesModal()" @dblclickEstudiante="establecerEstudiante"/>
+  <EstudiantesModal v-if="mostrarModal" @close="toggleEstudiantesModal()" @dblclickEstudiante="establecerEstudiante" :idCurso="idcurso"/>
   <div class="container">
     <button class="btn btn-success m-1" @click="toggleEstudiantesModal()">Matricular</button>
     <div class="table-responsive">

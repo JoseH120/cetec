@@ -68,7 +68,7 @@ const router = createRouter({
       component: () => import("../views/matricula/Matricula.vue"),
     },
     {
-      path: "/my/index/:idEstudiante?",
+      path: "/my/index/:id?",
       name: "Index",
       component: () => import("../views/my/Index.vue"),
     },

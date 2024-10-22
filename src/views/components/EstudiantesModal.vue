@@ -93,10 +93,14 @@ import axios from 'axios';
 
 const estudiantes = ref(null);
 
+const props = defineProps({
+    idCurso: Number
+});
+
 const emit = defineEmits(['close', 'dblclickEstudiante']);
 
 const getEstudiantes = ()=>{
-    axios.get('http://localhost/sistema/api/estudiantes/estudiantes').then(
+    axios.get('http://localhost/sistema/api/estudiantes/estudiantes/'+props.idCurso).then(
         async res => {
             estudiantes.value = await res.data;
         })

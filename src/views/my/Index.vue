@@ -13,7 +13,7 @@
       >
         <div class="card-body">
           <h5 class="card-title" v-text="card.NombreCurso"></h5>
-          <h6 class="card-subtitle mb-2 text-muted" v-text="card.Nombre"></h6>
+          <h6 class="card-subtitle mb-2 text-muted" v-text="(card.Nombre)"></h6>
           <p class="card-text" v-text="card.Descripcion"></p>
           <p class="card-subtitle mb-2 text-muted" v-text="'Grupo: '+card.Grupo"></p>
         </div>
@@ -29,9 +29,13 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import { useRoute } from "vue-router";
 
-const Tipo = 'TUTOR';
-const id = ref(90);
+const route = useRoute();
+const Id = route.params.id;
+
+const Tipo = localStorage.getItem('tipo');
+const id = ref(Id);
 const cards = ref(null);
 
 const getMyCursos = () => {
