@@ -4,11 +4,15 @@ import SideBar from '../components/SideBar.vue';
 import ActividadSave from '../actividades/ActividadSave.vue';
 import { useRoute } from "vue-router";
 import { api } from '@/pluggins/axios';
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
+import Swal from "sweetalert2";
+import { mostrarAlerta } from "@/funciones/funciones";
 
 const route = useRoute();
-const idCurso = parseInt(route.params.idCurso);
+const idCurso = ref(parseInt(route.params.idCurso));
 const Actividades = ref(null);
+const TipoUsuario = localStorage.getItem('tipo');
+const activo = ref(true);
 
 const curso = reactive({
     IdCurso: 0,
@@ -29,7 +33,7 @@ const getCurso = async (id)=>{
 };
 
 const getActividades = async () =>{
-    const  respuesta = api.get(`/actividades/actividadesByCurso/${idCurso}`)
+    const  respuesta = api.get(`/actividades/actividadesByCurso/${idCurso.value}`)
 
     Actividades.value = (await respuesta).data;
 }
@@ -39,7 +43,36 @@ const openModal = ()=>{
     windowBackground.style.display='flex'
 }
 
-getCurso(idCurso);
+const eliminarActivida = (actividad, id)=>{
+    Swal.fire({
+    title: `Desea eliminar la actividad ${actividad}`,
+    icon: "question",
+    showCancelButton: true,
+    customClass: {
+      confirmButton: "btn btn-success me-3",
+      cancelButton: "btn btn-danger",
+    },
+    confirmButtonText: '<i class="fa-solid fa-square-check"></i>Si, eliminar',
+    cancelButtonText: '<i class="fa-solid fa-circle-xmark"></i>Cancelar',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      api
+        .delete(`/actividades/delete/${id}`)
+        .then(() => {
+          mostrarAlerta("Registro eliminado", "success");
+          getActividades();
+        })
+        .catch(() => {
+          mostrarAlerta("Error al elimar", "error");
+        });
+    } else if (result.isDismissed) {
+      //   Swal.fire("Dissmissed action of deliting");
+      mostrarAlerta("Accion cancelada", "warning");
+    }
+  });
+}
+
+getCurso(idCurso.value);
 getActividades();
 
 
@@ -48,7 +81,7 @@ getActividades();
 <template>
     <div class="Container">
         <SideBar class="box" :idCurso=idCurso />
-        <ActividadSave />
+        <ActividadSave :idCurso=idCurso />
         <div class="contenido">
             <h2>Curso de {{ curso.NombreCurso }}</h2>
             <div>
@@ -60,8 +93,9 @@ getActividades();
             <section v-for="(act, i) in Actividades" :key="act.IdActividad" :id="(act.IdActividad)" >
                 <h3 v-text="(act.Tema)"></h3>
                 <p v-text="(act.Descripcion)"></p>
+                <a :href="(act.UrlRecurso)" target="_blank" >Archivo</a>
                 <div class="acciones">
-                    <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-danger" @click="eliminarActivida(act.Tema, act.IdActividad)"><i class="fa fa-trash"></i></button>
                     <RouterLink :to="{ path: '/' }" class="btn btn-info">
                         <i class="fa fa-pencil" aria-hidden="true"></i>
                     </RouterLink>

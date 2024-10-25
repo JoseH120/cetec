@@ -19,7 +19,7 @@
         </div>
         <div class="footer mb-2">
           <Router-link class="btn btn-primary m-1" :to="('/curso/'+card.IdCurso)">Ver curso</Router-link>
-          <Router-link class="card-link" :to="('/matricula/'+card.IdCurso)">Matricula</Router-link>
+          <Router-link v-if="activo" class="card-link" :to="('/matricula/'+card.IdCurso)">Matricula</Router-link>
         </div>
       </div>
     </div>
@@ -37,11 +37,13 @@ const Id = route.params.id;
 const Tipo = localStorage.getItem('tipo');
 const id = ref(Id);
 const cards = ref(null);
+const activo = ref(true);
 
 const getMyCursos = () => {
   switch (Tipo) {
     case 'TUTOR':
       {
+        activo.value = true;
         axios.get(
           "http://localhost/sistema/api/cursos/CursosByTutor/" +
           id.value
@@ -56,6 +58,7 @@ const getMyCursos = () => {
       break;
     case 'ESTUDIANTE':
       {
+        activo.value = false;
         axios.get(
           "http://localhost/sistema/api/estudiantescursos/getCursosByEstudiante/" +
           id.value
@@ -69,6 +72,7 @@ const getMyCursos = () => {
       }   
       break;
     default:
+      activo.value = true;
       break;
   }
 };

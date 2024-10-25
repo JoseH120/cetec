@@ -1,5 +1,27 @@
 <script setup>
 
+import { reactive, ref } from "vue";
+import { api } from "@/pluggins/axios"
+import router from "@/router";
+
+const props = defineProps({idCurso: Number});
+const form = reactive({
+    Tema: '',
+    Descripcion: '',
+    IdCurso: 0
+});
+
+const file = ref(null);
+
+//Cuando cambia el arcchivo actualiza la variable file 
+const cargarArchivo = (e) =>{
+    if(e.target.files[0]){
+        file.value = e.target.files[0];         
+    } 
+    else{
+        file.value = null;
+    }     
+}
 
 window.addEventListener('click', (e)=>{
     const windowBackground = document.getElementById('window-background');
@@ -19,6 +41,25 @@ const closeWindow = () =>{
     }, 1000);
 }
 
+const guardarActividad = async () =>{
+    const formulario = new FormData();
+    form.IdCurso = props.idCurso;
+
+    formulario.append("Tema", form.Tema);
+    formulario.append("Descripcion", form.Descripcion);
+    formulario.append("UrlRecurso", file.value);
+    formulario.append("IdCurso", form.IdCurso);
+
+    const respuesta = await api.post('/actividades/create', formulario, {headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+    "X-Requested-With": "XMLHttpRequest",
+  }});
+
+    closeWindow();
+    router.push("/curso/"+props.idCurso);
+}
+
+
 
 </script>
 <template>
@@ -29,7 +70,7 @@ const closeWindow = () =>{
                     <i class="fa fa-times icon-x" aria-hidden="true"></i>
                 </button>
                 <h2>Recurso</h2>
-                <form>
+                <form @submit.prevent="guardarActividad()" enctype="multipart/form-data">
                     <div class="form-group row mt-2">
                         <label for="IdActividad" class="col-sm-2 col-form-label" hidden>ID: </label>
                         <div class="col-sm-10">
@@ -40,21 +81,22 @@ const closeWindow = () =>{
                     <div class="form-group row mt-2">
                         <label for="Tema" class="col-sm-2 col-form-label">Tema: </label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="Tema" autofocus>
+                            <input type="text" class="form-control" id="Tema" v-model="form.Tema" autofocus required>
                         </div>
                     </div>
 
                     <div class="form-group row mt-2">
                         <label for="Descripcion" class="col-sm-2 col-form-label">Descripcion: </label>
                         <div class="col-sm-10">
-                            <textarea id="Descripcion" class="form-control"></textarea>
+                            <textarea id="Descripcion" class="form-control" v-model="form.Descripcion" required>
+                            </textarea>
                         </div>
                     </div>
 
                     <div class="form-group row mt-2">
                         <label for="UrlRecurso" class="col-sm-2 col-form-label">Recurso: </label>
                         <div class="col-sm-10">
-                            <input type="file" class="custom-file-input" id="UrlRecurso">
+                            <input type="file" class="custom-file-input" @change="cargarArchivo" id="UrlRecurso" required>
                         </div>
                     </div>
 
