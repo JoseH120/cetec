@@ -1,6 +1,7 @@
 <script setup>
 import SideBar from "../components/SideBar.vue";
 import ActividadSave from "../actividades/ActividadSave.vue";
+import TareasSave from "../tareas/TareasSave.vue";
 import { useRoute } from "vue-router";
 import { api } from "@/pluggins/axios";
 import { reactive, ref } from "vue";
@@ -11,7 +12,8 @@ const route = useRoute();
 const idCurso = ref(parseInt(route.params.idCurso));
 const Actividades = ref(null);
 const TipoUsuario = localStorage.getItem("tipo");
-const activo = ref(true);
+const idactividad = ref(0);
+const Actividad = ref(null);
 
 const curso = reactive({
   IdCurso: 0,
@@ -32,12 +34,20 @@ const getCurso = async (id) => {
 };
 
 const getActividades = async () => {
-  const respuesta = api.get(`/actividades/actividadesByCurso/${idCurso.value}`);
-
-  Actividades.value = (await respuesta).data;
+  try{
+    const respuesta = api.get(`/actividades/actividadesByCurso/${idCurso.value}`);
+  if((await respuesta).status != 500)
+    Actividades.value = (await respuesta).data;
+  }
+  catch(e){}
+  
 };
 
-const openModal = () => {
+const openModal = (actividad = null) => {
+  if(actividad){
+    Actividad.value = actividad;
+  }
+  
   const windowBackground = document.getElementById("window-background");
   windowBackground.style.display = "flex";
 };
@@ -76,6 +86,12 @@ const refresh = () => {
   getCurso(idCurso.value);
 };
 
+const openModalTarea = (id)=>{
+  const windowBackground = document.getElementById("window-background-tarea");
+  windowBackground.style.display = "flex";
+  idactividad.value = parseInt(id);
+}
+
 getCurso(idCurso.value);
 getActividades();
 </script>
@@ -88,8 +104,11 @@ getActividades();
       :idCurso="idCurso"
       :nombreCurso="curso.NombreCurso"
     />
+    
 
-    <ActividadSave :idCurso="idCurso" @refresh="refresh" />
+    <ActividadSave :idCurso="idCurso" :actividad="Actividad" @refresh="refresh" />
+
+    <TareasSave :idActividad="idactividad" />
     <div class="contenido">
       <h2>Curso de {{ curso.NombreCurso }}</h2>
       <div>
@@ -121,15 +140,16 @@ getActividades();
           </button>
           <button
             v-if="TipoUsuario != 'ESTUDIANTE'"
-            :to="{ path: '/' }"
-            class="btn btn-info"
+            class="btn btn-info" @click="openModal(act)"
           >
             <i class="fa fa-pencil" aria-hidden="true"></i>
           </button>
-          <button v-if="TipoUsuario != 'TUTOR'" class="btn btn-light">
+          <button v-if="TipoUsuario != 'TUTOR'" class="btn btn-light"
+          title="Subir tarea" @click="openModalTarea(act.IdActividad)">
             <i class="fa-solid fa-upload"></i>
           </button>
-          <button v-if="TipoUsuario != 'ESTUDIANTE'" class="btn btn-light">
+          <button v-if="TipoUsuario != 'ESTUDIANTE'" class="btn btn-light"
+          title="Descargar tareas de los estudiantes">
             <i class="fa-solid fa-download"></i>
           </button>
         </div>
@@ -145,7 +165,7 @@ getActividades();
 }
 
 .box {
-  text-align: center;
+  text-align: center; 
 }
 
 .contenido {

@@ -120,7 +120,7 @@ const establecerUsuario = (uss) => {
         </div>
         <div class="col-md-6">
           <label for="txtNombre" class="form-label"
-            >Nombres: {{ activo }}
+            >Nombres:
           </label>
           <input
             type="text"

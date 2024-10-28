@@ -1,14 +1,16 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { onMounted, onUpdated, reactive, ref, watch } from "vue";
 import { api } from "@/pluggins/axios";
-import router from "@/router";
 
-const props = defineProps({ idCurso: Number });
+const props = defineProps({ idCurso: Number, actividad: Object });
 const form = reactive({
+  IdActividad: 0,
   Tema: "",
   Descripcion: "",
   IdCurso: 0,
 });
+
+const activida = ref(props.actividad);
 
 const emit = defineEmits(["refresh"]);
 
@@ -51,18 +53,46 @@ const guardarActividad = async () => {
   formulario.append("UrlRecurso", file.value);
   formulario.append("IdCurso", form.IdCurso);
 
-  const respuesta = await api.post("/actividades/create", formulario, {
+  if(form.IdActividad != null){
+    //Actualizar
+    console.log("ejecuta el actualizar"+form.IdActividad)
+    const respuesta = await api.post("/actividades/update/"+form.IdActividad, formulario, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       "X-Requested-With": "XMLHttpRequest",
     },
   });
+  }
+  else{
+    //Guardar
+
+    console.log("ejecuta el guardar")
+    const respuesta = await api.post("/actividades/create", formulario, {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-Requested-With": "XMLHttpRequest",
+    },
+  });
+  }
 
   closeWindow();
   emit("refresh");
 
   forms.reset();
 };
+
+onUpdated(()=>{
+  if(props.actividad){
+    if(form.IdActividad != props.actividad.IdActividad){
+      form.IdActividad = props.actividad.IdActividad; 
+      form.Tema = props.actividad.Tema;
+      form.Descripcion = props.actividad.Descripcion;
+      form.IdCurso = props.idCurso;
+      console.log("Ejecutando")
+    }
+  }
+});
+
 </script>
 <template>
   <div class="body-contenido">
@@ -86,6 +116,7 @@ const guardarActividad = async () => {
                 type="number"
                 class="form-control"
                 id="IdActividad"
+                v-model="form.IdActividad"
                 hidden
                 disabled
               />
@@ -100,8 +131,8 @@ const guardarActividad = async () => {
                 class="form-control"
                 id="Tema"
                 v-model="form.Tema"
-                autofocus
                 required
+                autofocus
               />
             </div>
           </div>
@@ -128,7 +159,7 @@ const guardarActividad = async () => {
             <div class="col-sm-10">
               <input
                 type="file"
-                class="custom-file-input"
+                class="form-control"
                 @change="cargarArchivo"
                 id="UrlRecurso"
                 required

@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
               <label for="clave">Clave</label>
-              <input
+                <input
                 type="password"
                 name="clave"
                 id="clave"

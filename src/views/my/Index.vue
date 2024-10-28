@@ -1,4 +1,6 @@
-<style scoped></style>
+<style scoped>
+
+</style>
 
 <template>
   &nbsp;
@@ -8,7 +10,7 @@
         v-if="cards"
         v-for="(card, i) in cards"
         :key="card.IdCurso"
-        class="card mx-2"
+        class="card mx-2 my-2"
         style="width: 18rem"
       >
         <div class="card-body">
@@ -17,7 +19,7 @@
           <p class="card-text" v-text="card.Descripcion"></p>
           <p class="card-subtitle mb-2 text-muted" v-text="'Grupo: '+card.Grupo"></p>
         </div>
-        <div class="footer mb-2">
+        <div class="footer">
           <Router-link class="btn btn-primary m-1" :to="('/curso/'+card.IdCurso)">Ver curso</Router-link>
           <Router-link v-if="activo" class="card-link" :to="('/matricula/'+card.IdCurso)">Matricula</Router-link>
         </div>
