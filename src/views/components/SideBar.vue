@@ -1,17 +1,21 @@
 <script setup>
 
 import { api } from "@/pluggins/axios";
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 
 let props = defineProps({
-    idCurso: Number
+    idCurso: Number,
 });
+
 
 const curso = reactive({
   NombreCurso: '',
 });
 
-const actividades = ref(null);
+
+const emit = defineEmits(['refreshSideBar']);
+
+const actividades = ref(props.actividades);
 
 const getCurso = async (id)=>{
   const respuesta = api.get(`/cursos/edit/${Number(id)}`);

@@ -11,6 +11,8 @@ const form = reactive({
     IdCurso: 0
 });
 
+const emit = defineEmits(['refresh']);
+
 const file = ref(null);
 
 //Cuando cambia el arcchivo actualiza la variable file 
@@ -56,7 +58,7 @@ const guardarActividad = async () =>{
   }});
 
     closeWindow();
-    router.push("/curso/"+props.idCurso);
+    emit("refresh");
 }
 
 

@@ -4,7 +4,7 @@ import SideBar from '../components/SideBar.vue';
 import ActividadSave from '../actividades/ActividadSave.vue';
 import { useRoute } from "vue-router";
 import { api } from '@/pluggins/axios';
-import { onMounted, reactive, ref } from 'vue';
+import {  reactive, ref } from 'vue';
 import Swal from "sweetalert2";
 import { mostrarAlerta } from "@/funciones/funciones";
 
@@ -43,7 +43,7 @@ const openModal = ()=>{
     windowBackground.style.display='flex'
 }
 
-const eliminarActivida = (actividad, id)=>{
+const eliminarActividad = (actividad, id)=>{
     Swal.fire({
     title: `Desea eliminar la actividad ${actividad}`,
     icon: "question",
@@ -72,6 +72,11 @@ const eliminarActivida = (actividad, id)=>{
   });
 }
 
+const refresh = ()=>{
+    getActividades();
+    getCurso(idCurso.value);
+}
+
 getCurso(idCurso.value);
 getActividades();
 
@@ -81,7 +86,8 @@ getActividades();
 <template>
     <div class="Container">
         <SideBar class="box" :idCurso=idCurso />
-        <ActividadSave :idCurso=idCurso />
+        
+        <ActividadSave  :idCurso=idCurso @refresh="refresh"/>
         <div class="contenido">
             <h2>Curso de {{ curso.NombreCurso }}</h2>
             <div>
@@ -95,7 +101,7 @@ getActividades();
                 <p v-text="(act.Descripcion)"></p>
                 <a :href="(act.UrlRecurso)" target="_blank" >Archivo</a>
                 <div class="acciones">
-                    <button class="btn btn-danger" @click="eliminarActivida(act.Tema, act.IdActividad)"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-danger" @click="eliminarActividad(act.Tema, act.IdActividad)"><i class="fa fa-trash"></i></button>
                     <RouterLink :to="{ path: '/' }" class="btn btn-info">
                         <i class="fa fa-pencil" aria-hidden="true"></i>
                     </RouterLink>
