@@ -1,10 +1,11 @@
 <script setup>
 
 import { api } from "@/pluggins/axios";
-import { reactive, ref, watch } from "vue";
+import { reactive  } from "vue";
 
 let props = defineProps({
     idCurso: Number,
+    actividades: Object
 });
 
 
@@ -15,8 +16,6 @@ const curso = reactive({
 
 const emit = defineEmits(['refreshSideBar']);
 
-const actividades = ref(props.actividades);
-
 const getCurso = async (id)=>{
   const respuesta = api.get(`/cursos/edit/${Number(id)}`);
 
@@ -25,13 +24,6 @@ const getCurso = async (id)=>{
   curso.NombreCurso = Curso.NombreCurso;
 };
 
-const getActividades = async () =>{
-    const  respuesta = api.get(`/actividades/actividadesByCurso/${props.idCurso}`)
-
-    actividades.value = (await respuesta).data;
-}
-
-getActividades();
 const toggleSideBar = () =>{
     const barraLateral = document.getElementById("barraLateral");
     const spans = document.querySelectorAll("span");
@@ -68,17 +60,6 @@ getCurso(props.idCurso);
 </template>
 
 <style scoped>
-
-:root{
-    --color-barra-lateral: rgb(255, 255, 255);
-    --color-texto: rgb(0, 0, 0);
-    --color-texto-menu: rgb(134, 136, 144);
-    --color-boton: rgb(0, 0, 0);
-    --color-texto-boton: rgb(255, 255, 255);
-
-    --color-menu-hover: rgb(238, 238, 238);
-    --color-menu-hover-texto: rgb(0, 0, 0);
-}
 
 *{
     margin: 0;

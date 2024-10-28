@@ -85,7 +85,7 @@ getActividades();
 
 <template>
     <div class="Container">
-        <SideBar class="box" :idCurso=idCurso />
+        <SideBar class="box" :actividades="Actividades" :idCurso="idCurso"/>
         
         <ActividadSave  :idCurso=idCurso @refresh="refresh"/>
         <div class="contenido">
