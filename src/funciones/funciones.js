@@ -2,7 +2,8 @@ import Swal from "sweetalert2";
 import { api } from "@/pluggins/axios";
 import router from "@/router";
 function mostrarAlerta(titulo, icono, foco = "") {
-  if (foco != "") document.getElementById(foco).focus();
+  if (foco != "") 
+    document.getElementById(foco).focus();
   Swal.fire({
     title: titulo,
     icon: icono,
