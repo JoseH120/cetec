@@ -82,6 +82,11 @@ const router = createRouter({
       name: "ActividadSave",
       component: () => import("../views/actividades/ActividadSave.vue"),
     },
+    {
+      path: "/listar_tareas/:idActividad",
+      name: "TareasListar",
+      component: () => import("../views/tareas/TareasListar.vue"),
+    },
   ],
 });
 

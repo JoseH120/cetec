@@ -7,6 +7,7 @@ import { api } from "@/pluggins/axios";
 import { reactive, ref } from "vue";
 import Swal from "sweetalert2";
 import { mostrarAlerta } from "@/funciones/funciones";
+import router from "@/router";
 
 const route = useRoute();
 const idCurso = ref(parseInt(route.params.idCurso));
@@ -92,6 +93,10 @@ const openModalTarea = (id)=>{
   idactividad.value = parseInt(id);
 }
 
+const VerTareas = (id) =>{
+  router.push("/listar_tareas/"+id)
+}
+
 getCurso(idCurso.value);
 getActividades();
 </script>
@@ -126,8 +131,10 @@ getActividades();
         v-for="(act, i) in Actividades"
         :key="act.IdActividad"
         :id="act.IdActividad"
+        @dblclick="VerTareas(act.IdActividad)"
+        class="cursor"
       >
-        <h3 v-text="act.Tema"></h3>
+        <h3 class="cursor" v-text="act.Tema" @click="VerTareas(act.IdActividad)"></h3>
         <p v-text="act.Descripcion"></p>
         <a :href="act.UrlRecurso" target="_blank">Archivo</a>
         <div class="acciones">
@@ -205,5 +212,9 @@ section {
 }
 .open-button:active {
   transform: scale(0.95);
+}
+
+.cursor:hover{
+  cursor: pointer;
 }
 </style>
