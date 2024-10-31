@@ -4,6 +4,7 @@ import { api } from '@/pluggins/axios';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+
 const route = useRoute();
 const idActividad = parseInt(route.params.idActividad) || 0;
 
@@ -18,6 +19,8 @@ const getListarTareas = async () =>{
 
 const Modo = ()=>{
     activo.value = !activo.value;
+    console.log(Tareas.value[1]['Nombre']);
+
 }
 
 const calificar = (id)=>{
@@ -27,6 +30,7 @@ const calificar = (id)=>{
             "Nota": nota.value
         };
         const respuesta = api.put(`/actividadesestudiantes/update/${Number(id)}`, params);
+        getListarTareas();
         mostrarAlerta("Nota asignada", "success");
     }
     else{
@@ -34,14 +38,41 @@ const calificar = (id)=>{
     }
 }
 
+
+const downloadAll = ()=>{
+    for(let i = 0; i<Tareas.value.length; i++){
+        const url =  Tareas.value[i]['UrlTarea'];
+
+        fetch(url)
+        .then(resp => resp.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = Tareas.value[i]['Nombre'];
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(()=>{
+            alert('error');
+        });
+    }
+};
+
 onMounted(()=>{
     getListarTareas();
+    
 });
+
 </script>
 <template>
-    <h2 class="text-muted">Tareas recibidas de </h2>
+    <h2 class="text-muted">Tareas recibidas de</h2>
     <div class="container">
-        <button class="btn btn-primary m-2" title="Descargar todas las tareas">
+        <button class="btn btn-primary m-2" 
+        @click="downloadAll()"
+        title="Descargar todas las tareas">
             <i class="fa-solid fa-download"></i> Descargar
         </button>
         

@@ -155,6 +155,10 @@ getActividades();
           title="Subir tarea" @click="openModalTarea(act.IdActividad)">
             <i class="fa-solid fa-upload"></i>
           </button>
+          <button v-if="TipoUsuario != 'TUTOR'" class="btn btn-link"
+          title="Ver tarea enviada">
+            <i class="fa-solid fa-eye"></i>
+          </button>
           <button v-if="TipoUsuario != 'ESTUDIANTE'" class="btn btn-light"
           title="Descargar tareas de los estudiantes">
             <i class="fa-solid fa-download"></i>

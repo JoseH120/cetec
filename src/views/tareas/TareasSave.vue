@@ -153,22 +153,6 @@
           </div>
 
           <div class="form-group row mt-2">
-            <label for="Nota" class="col-sm-2 col-form-label">Calificacion: </label>
-            <div class="col-sm-2">
-              <input
-                type="number"
-                class="form-control"
-                id="Nota"
-                v-model="form.Nota"
-                max="10.00"
-                min="0.00"
-                step="0.01"
-                :disabled="activo"
-              />
-            </div>
-          </div>
-
-          <div class="form-group row mt-2">
             <label for="IdCurso" class="col-sm-2 col-form-label" hidden
               >ID Curso:
             </label>
