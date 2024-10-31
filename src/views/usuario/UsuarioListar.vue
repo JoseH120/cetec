@@ -29,11 +29,10 @@ const eliminar = (id, user) => {
           mostrarAlerta("Registro eliminado", "success");
           getUsuarios();
         })
-        .catch((error) => {
-          mostrarAlerta("Error elimando", "error");
+        .catch(() => {
+          mostrarAlerta("Error al eliminar", "error");
         });
     } else if (result.isDismissed) {
-      //   Swal.fire("Dissmissed action of deliting");
       mostrarAlerta("Accion cancelada", "warning");
     }
   });

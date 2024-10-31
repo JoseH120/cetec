@@ -17,8 +17,6 @@ const form = reactive({
 const estado = reactive({
   usuario: {},
   desactivar: false,
-  lectura: false,
-  cambiarEmail: false,
   cambiarClave: false,
 });
 
@@ -29,12 +27,11 @@ onMounted(() => {
       break;
     case 1:
       estado.desactivar = true;
-      estado.lectura = true;
       getUsuario(idUsuario);
       break;
     case 2:
       estado.desactivar = false;
-      estado.lectura = false;
+      estado.cambiarClave = false;
       getUsuario(idUsuario);
       break;
   }
@@ -47,7 +44,7 @@ const getUsuario = async (id) => {
   form.usuario = estado.usuario.Usuario;
   form.email = estado.usuario.email;
   form.tipo = estado.usuario.Tipo;
-  form.clave = "";
+  form.clave = null;
 };
 
 const guardarUsuario = () => {
@@ -60,12 +57,14 @@ const guardarUsuario = () => {
   // Opcion de editar usuario
   if (opcion != 0) {
     params.usuario = form.usuario;
-    estado.usuario.email != form.email
+    // estado.usuario.email != form.email
+    form.email != null
       ? (params.email = form.email)
-      : delete params.email;
-    delete params.clave;
+      : console.log("delete params.email");
+    form.clave != null && estado.cambiarClave
+      ? (params.clave = form.clave)
+      : delete params.clave;
     params.tipo = form.tipo;
-
     enviarSolicitud(
       "PUT",
       params,
@@ -80,7 +79,6 @@ const guardarUsuario = () => {
     params.email = form.email;
     params.clave = form.clave;
     params.tipo = form.tipo;
-
     enviarSolicitud(
       "POST",
       params,
@@ -127,27 +125,19 @@ const limpiarCampos = () => {
 
         <label for="txtEmail" class="form-label">Email: </label>
         <input
-          type="checkbox"
-          v-model="estado.cambiarEmail"
-          :disabled="estado.desactivar"
-        />
-        <input
           type="text"
           v-model="form.email"
           name="txtEmail"
           id="txtEmail"
           placeholder="Ingresar email..."
           class="form-control"
-          :disabled="estado.desactivar || estado.cambiarEmail"
+          :disabled="estado.desactivar"
+          required
         />
         <br />
 
         <label for="txtClave">Contraseña: </label>
-        <input
-          type="checkbox"
-          v-model="estado.cambiarClave"
-          :disabled="estado.desactivar"
-        />
+        <input type="checkbox" v-model="estado.cambiarClave" />
         <input
           type="password"
           v-model="form.clave"
@@ -156,7 +146,8 @@ const limpiarCampos = () => {
           placeholder="Ingresar clave..."
           class="form-control"
           autocomplete="off"
-          :disabled="estado.desactivar || estado.cambiarClave"
+          :disabled="estado.desactivar || !estado.cambiarClave"
+          required
         />
         <br />
 
@@ -167,6 +158,7 @@ const limpiarCampos = () => {
           id="cbTipo"
           class="form-select"
           :disabled="estado.desactivar"
+          required
         >
           <option value="null">-- Seleccionar --</option>
           <option value="ADMINISTRADOR">ADMINISTRADOR</option>
@@ -177,7 +169,7 @@ const limpiarCampos = () => {
 
         <div class="d-grid gap-2 d-md-block">
           <button
-            v-show="!estado.lectura"
+            v-show="!estado.desactivar"
             class="btn btn-primary boton"
             id="btnGuardar"
             :disabled="estado.editar"

@@ -2,8 +2,7 @@ import Swal from "sweetalert2";
 import { api } from "@/pluggins/axios";
 import router from "@/router";
 function mostrarAlerta(titulo, icono, foco = "") {
-  if (foco != "") 
-    document.getElementById(foco).focus();
+  if (foco != "") document.getElementById(foco).focus();
   Swal.fire({
     title: titulo,
     icon: icono,
@@ -59,28 +58,25 @@ function enviarSolicitud(metodo, parametros = {}, url, mensaje, redict) {
     .then((res) => {
       var estado = res.status;
       if (estado == 200 || estado == 201) {
-
         mostrarAlerta(mensaje, "success");
-        
         setTimeout(function () {
           router.push(redict);
         }, 1000);
-
       }
     })
-    .catch((error) => {
-      if (error.response) {
-        if (error.response.status == 400) {
+    .catch((err) => {
+      if (err.response) {
+        if (err.response.status == 400) {
+          mostrarAlerta("Error: " + err.response.data.messages.error, "error");
+        } else if (err.response.status == 500) {
           mostrarAlerta(
-            "Error: " + error.response.data.messages.error,
+            "Error interno en el servidor" + err.response.data.messages,
             "error"
           );
-        } else if (error.response.status == 500) {
-          mostrarAlerta("Error interno en el servidor", "error");
         } else {
           mostrarAlerta("servidor no disponible", "error");
         }
-      } else if (error.request) {
+      } else if (err.request) {
         mostrarAlerta("Error", "error");
       } else {
         mostrarAlerta("Error", "error");

@@ -112,10 +112,9 @@ const eliminar = (id, curso) => {
           getCursos();
         })
         .catch(() => {
-          mostrarAlerta("Error elimando", "error");
+          mostrarAlerta("Error al eliminar", "error");
         });
     } else if (result.isDismissed) {
-      //   Swal.fire("Dissmissed action of deliting");
       mostrarAlerta("Accion cancelada", "warning");
     }
   });

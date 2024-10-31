@@ -35,7 +35,7 @@ api.interceptors.response.use(
   },
   function (error) {
     if (error.response.status === 400) {
-      store.dispatch("logout");
+      return Promise.reject(error);
     } else {
       return Promise.reject(error);
     }
