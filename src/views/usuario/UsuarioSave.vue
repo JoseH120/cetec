@@ -24,6 +24,7 @@ onMounted(() => {
   switch (Number(opcion)) {
     case 0:
       estado.desactivar = false;
+      estado.cambiarClave = true;
       break;
     case 1:
       estado.desactivar = true;
@@ -136,8 +137,19 @@ const limpiarCampos = () => {
         />
         <br />
 
-        <label for="txtClave">Contraseña: </label>
-        <input type="checkbox" v-model="estado.cambiarClave" />
+        <label
+          for="txtClave"
+          v-text="opcion != 0 ? `¿Cambiar Clave?` : 'Ingresar Clave'"
+        ></label>
+        <input
+          v-show="opcion != 0"
+          type="checkbox"
+          v-model="estado.cambiarClave"
+        />
+        <label
+          v-show="opcion != 0"
+          v-text="estado.cambiarClave ? ' Si' : ' No'"
+        ></label>
         <input
           type="password"
           v-model="form.clave"

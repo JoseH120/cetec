@@ -1,9 +1,16 @@
-<style scoped>
-</style>
+<style scoped></style>
 <template>
-  <EstudiantesModal v-if="mostrarModal" @close="toggleEstudiantesModal()" @dblclickEstudiante="establecerEstudiante" :idCurso="idcurso"/>
+  <EstudiantesModal
+    v-if="mostrarModal"
+    @close="toggleEstudiantesModal()"
+    @dblclickEstudiante="establecerEstudiante"
+    :idCurso="idcurso"
+  />
   <div class="container">
-    <button class="btn btn-success m-1" @click="toggleEstudiantesModal()">Matricular</button>
+    <button class="btn btn-success m-1" @click="toggleEstudiantesModal()">
+      Matricular
+    </button>
+    <button class="btn btn-light m-1" @click="router.go(-1)">Retrodecer</button>
     <div class="table-responsive">
       <table class="table table-bordered table-hover">
         <thead>
@@ -29,8 +36,15 @@
             <td v-text="estudiante.Apellido"></td>
             <td v-text="estudiante.Correo"></td>
             <td>
-              <button class="btn btn-danger" 
-              @click="eliminarMatricula(estudiante.Nombre+' '+estudiante.Apellido, estudiante.Idestudiante_curso)">
+              <button
+                class="btn btn-danger"
+                @click="
+                  eliminarMatricula(
+                    estudiante.Nombre + ' ' + estudiante.Apellido,
+                    estudiante.Idestudiante_curso
+                  )
+                "
+              >
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             </td>
@@ -45,12 +59,12 @@
 import { mostrarAlerta, enviarSolicitud } from "@/funciones/funciones";
 import { api } from "@/pluggins/axios";
 import { reactive, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Swal from "sweetalert2";
 import EstudiantesModal from "@/views/components/EstudiantesModal.vue";
 
-
 const route = useRoute();
+const router = useRouter();
 const idcurso = route.params.idCurso || 0;
 const mostrarModal = ref(false);
 
@@ -100,23 +114,22 @@ const toggleEstudiantesModal = () => {
   mostrarModal.value = !mostrarModal.value;
 };
 
-const establecerEstudiante = (IdEstudiante) =>{
-
+const establecerEstudiante = (IdEstudiante) => {
   let parametros = {
-    IdEstudiante:IdEstudiante,
-    IdCurso:idcurso
-};
+    IdEstudiante: IdEstudiante,
+    IdCurso: idcurso,
+  };
   api
-        .post('/estudiantescursos/create', parametros)
-        .then(() => {
-          mostrarAlerta("Matriculado", "success");
-          getMatricula();
-        })
-        .catch((error) => {
-          mostrarAlerta("Error al matricular", "error");
-        }); 
+    .post("/estudiantescursos/create", parametros)
+    .then(() => {
+      mostrarAlerta("Matriculado", "success");
+      getMatricula();
+    })
+    .catch((error) => {
+      mostrarAlerta("Error al matricular", "error");
+    });
   toggleEstudiantesModal();
-}
+};
 
 getMatricula();
 </script>

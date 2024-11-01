@@ -107,7 +107,8 @@ const toggleUsuariosModal = () => {
 };
 
 const establecerUsuario = (uss) => {
-  form.IdUsuario = uss;
+  form.IdUsuario = uss.IdUsuario;
+  form.Correo = uss.email;
   mostrarModal.value = !mostrarModal.value;
 };
 </script>

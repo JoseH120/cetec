@@ -88,7 +88,8 @@ const toggleUsuariosModal = () => {
 };
 
 const establecerUsuario = (uss) => {
-  form.IdUsuario = uss;
+  form.IdUsuario = uss.IdUsuario;
+  form.Correo = uss.email;
   mostrarModal.value = !mostrarModal.value;
 };
 </script>
@@ -119,9 +120,7 @@ const establecerUsuario = (uss) => {
           />
         </div>
         <div class="col-md-6">
-          <label for="txtNombre" class="form-label"
-            >Nombres:
-          </label>
+          <label for="txtNombre" class="form-label">Nombres: </label>
           <input
             type="text"
             class="form-control"

@@ -54,6 +54,7 @@ getUsuarios();
               <tr>
                 <th>ID</th>
                 <th>Usuario</th>
+                <th>Correo</th>
                 <th>Tipo de usuario</th>
                 <th>Acciones</th>
               </tr>
@@ -69,6 +70,7 @@ getUsuarios();
               >
                 <td v-text="uss.IdUsuario"></td>
                 <td v-text="uss.Usuario"></td>
+                <td v-text="uss.email"></td>
                 <td v-text="uss.Tipo"></td>
                 <td>
                   <RouterLink
