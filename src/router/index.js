@@ -87,6 +87,11 @@ const router = createRouter({
       name: "TareasListar",
       component: () => import("../views/tareas/TareasListar.vue"),
     },
+    {
+      path: "/ver_tarea/:idActividad/:idEstudiante",
+      name: "VerTarea",
+      component: () => import("../views/tareas/VerTarea.vue"),
+    },
   ],
 });
 

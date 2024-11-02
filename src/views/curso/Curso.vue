@@ -13,8 +13,11 @@ const route = useRoute();
 const idCurso = ref(parseInt(route.params.idCurso));
 const Actividades = ref(null);
 const TipoUsuario = localStorage.getItem("tipo");
+const IdUsuario = localStorage.getItem("idusuario");
 const idactividad = ref(0);
 const Actividad = ref(null);
+
+let idEstudiante = 0;
 
 const curso = reactive({
   IdCurso: 0,
@@ -94,7 +97,24 @@ const openModalTarea = (id)=>{
 }
 
 const VerTareas = (id) =>{
-  router.push("/listar_tareas/"+id)
+if(TipoUsuario === 'TUTOR')
+  router.push("/listar_tareas/"+id);
+}
+
+const verTarea = (idActividad)=>{
+
+  if(TipoUsuario === 'ESTUDIANTE'){
+    const IdUsuario = parseInt(localStorage.getItem('idusuario'));
+    api
+        .get(`/estudiantes/getEstudiante/${IdUsuario}`)
+        .then((res) => {
+          idEstudiante = res.data.idestudiante;
+          router.push('/ver_tarea/'+idActividad+'/'+idEstudiante);
+        })
+        .catch(() => {
+        });
+  }
+
 }
 
 getCurso(idCurso.value);
@@ -156,7 +176,7 @@ getActividades();
             <i class="fa-solid fa-upload"></i>
           </button>
           <button v-if="TipoUsuario != 'TUTOR'" class="btn btn-link"
-          title="Ver tarea enviada">
+          title="Ver tarea enviada" @click="verTarea(act.IdActividad)">
             <i class="fa-solid fa-eye"></i>
           </button>
           <button v-if="TipoUsuario != 'ESTUDIANTE'" class="btn btn-light"

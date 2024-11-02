@@ -178,6 +178,7 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
 import { api } from "@/pluggins/axios";
+import { mostrarAlerta } from '@/funciones/funciones';
 
 let Titulo = ref('Subir Tarea');
 
@@ -228,11 +229,13 @@ const cargarArchivo = (e) => {
 };
 
 const getIdEstudiante = async () =>{
-  if(TipoUsuario === "ESTUDIANTE" ){
-    const respuesta = api.get(`/estudiantes/getEstudiante/${Number(idUsuario)}`);
-    form.IdEstudiante = (await respuesta).data.idestudiante;
+  try{
+    if(TipoUsuario === "ESTUDIANTE" ){
+      const respuesta = api.get(`/estudiantes/getEstudiante/${Number(idUsuario)}`);
+      form.IdEstudiante = (await respuesta).data.idestudiante;
+    }
   }
-    
+  catch(e){}
 }
 
 const subirTarea = async () =>{
@@ -245,7 +248,8 @@ const subirTarea = async () =>{
     formulario.append("IdActividad", form.IdActividad);
     formulario.append("UrlTarea", file.value);
     formulario.append("IdEstudiante", form.IdEstudiante);
-    
+
+
     const respuesta = await api.post("/actividadesestudiantes/create", formulario, {
         headers: {
         "Content-Type": "application/x-www-form-urlencoded",
