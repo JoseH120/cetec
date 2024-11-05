@@ -36,6 +36,11 @@ const closeWindow = () => {
 
   windowContainer.classList.add("close");
 
+  form.IdActividad = 0;
+  form.Tema = "";
+  form.Descripcion ="";
+  form.IdCurso= 0; 
+
   setTimeout(() => {
     windowContainer.classList.remove("close");
     windowBackground.style.display = "none";
@@ -55,7 +60,6 @@ const guardarActividad = async () => {
 
   if(form.IdActividad != null){
     //Actualizar
-    console.log("ejecuta el actualizar"+form.IdActividad)
     const respuesta = await api.post("/actividades/update/"+form.IdActividad, formulario, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -65,8 +69,6 @@ const guardarActividad = async () => {
   }
   else{
     //Guardar
-
-    console.log("ejecuta el guardar")
     const respuesta = await api.post("/actividades/create", formulario, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -74,11 +76,11 @@ const guardarActividad = async () => {
     },
   });
   }
-
+  forms.reset();
   closeWindow();
   emit("refresh");
 
-  forms.reset();
+  
 };
 
 onUpdated(()=>{
@@ -88,7 +90,6 @@ onUpdated(()=>{
       form.Tema = props.actividad.Tema;
       form.Descripcion = props.actividad.Descripcion;
       form.IdCurso = props.idCurso;
-      console.log("Ejecutando")
     }
   }
 });

@@ -20,7 +20,7 @@ const getTutores = async () => {
 
 const eliminar = (id, tutor) =>{
     Swal.fire({
-    title: `De verdad desea eliminar el tutor ${tutor}`,
+    title: `¿Desea eliminar el tutor ${tutor}?`,
     icon: "question",
     showCancelButton: true,
     customClass: {

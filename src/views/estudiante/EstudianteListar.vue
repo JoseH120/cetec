@@ -24,7 +24,7 @@ const getEstudiantes = async () => {
 
 const eliminar = (id, estudiante) => {
   Swal.fire({
-    title: `De verdad desea eliminar el estudiante ${estudiante}`,
+    title: `¿Desea eliminar el estudiante ${estudiante}?`,
     icon: "question",
     showCancelButton: true,
     customClass: {

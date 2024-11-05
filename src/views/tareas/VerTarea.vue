@@ -3,6 +3,7 @@ import { api } from "@/pluggins/axios";
 import { useRoute } from "vue-router";
 import { reactive, ref } from "vue";
 import { mostrarAlerta } from "@/funciones/funciones";
+import router from "@/router";
 
 const route = useRoute();
 const idActividad = ref(parseInt(route.params.idActividad));
@@ -15,9 +16,11 @@ const verTarea = async () =>{
         //enviar idActividad / idEstudiante 
         const respuesta = api.get(`/actividadesestudiantes/verTarea/${Number(idActividad.value)}/${Number(idEstudiante.value)}`);
         detalleTarea.value = (await respuesta).data;
+        console.log((await respuesta).status);
     }
     catch(e){
-        mostrarAlerta(e, "error");
+        mostrarAlerta(e.response.data.messages.error, "error")
+        router.go(-1);
     }
     
 }

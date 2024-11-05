@@ -94,7 +94,7 @@ const getCursos = async () => {
 
 const eliminar = (id, curso) => {
   Swal.fire({
-    title: `De verdad desea eliminar el curso ${curso}`,
+    title: `¿Desea eliminar el curso ${curso}?`,
     icon: "question",
     showCancelButton: true,
     customClass: {

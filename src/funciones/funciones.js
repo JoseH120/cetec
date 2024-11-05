@@ -6,7 +6,7 @@ function mostrarAlerta(titulo, icono, foco = "") {
   Swal.fire({
     title: titulo,
     icon: icono,
-    timer: 1000,
+
     customClass: {
       confirmButton: "btn btn-primary",
       popup: "animated zoonIn",

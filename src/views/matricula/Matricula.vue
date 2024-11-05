@@ -75,7 +75,7 @@ const estado = reactive({
 
 const eliminarMatricula = (nombre, idEstudiante) => {
   Swal.fire({
-    title: `Desea eliminar la matricula de ${nombre}`,
+    title: `¿Desea eliminar la matricula de ${nombre}?`,
     icon: "question",
     showCancelButton: true,
     customClass: {

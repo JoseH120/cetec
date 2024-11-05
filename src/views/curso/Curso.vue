@@ -17,7 +17,6 @@ const IdUsuario = localStorage.getItem("idusuario");
 const idactividad = ref(0);
 const Actividad = ref(null);
 
-let idEstudiante = 0;
 
 const curso = reactive({
   IdCurso: 0,
@@ -58,7 +57,7 @@ const openModal = (actividad = null) => {
 
 const eliminarActividad = (actividad, id) => {
   Swal.fire({
-    title: `Desea eliminar la actividad ${actividad}`,
+    title: `¿Desea eliminar la actividad ${actividad}?`,
     icon: "question",
     showCancelButton: true,
     customClass: {
@@ -72,8 +71,9 @@ const eliminarActividad = (actividad, id) => {
       api
         .delete(`/actividades/delete/${id}`)
         .then(() => {
-          mostrarAlerta("Registro eliminado", "success");
           getActividades();
+          mostrarAlerta("Registro eliminado", "success");
+          
         })
         .catch(() => {
           mostrarAlerta("Error al elimar", "error");
@@ -90,19 +90,44 @@ const refresh = () => {
   getCurso(idCurso.value);
 };
 
-const openModalTarea = (id)=>{
+
+const openModalTarea = async (id)=>{
+  /*
   const windowBackground = document.getElementById("window-background-tarea");
   windowBackground.style.display = "flex";
   idactividad.value = parseInt(id);
+  */
+  
+  let idEstudiante = 0;
+  try{
+    if(TipoUsuario == "ESTUDIANTE" ){
+      const resp = api.get(`/estudiantes/getEstudiante/${Number(IdUsuario)}`);
+      idEstudiante = (await resp).data.idestudiante;
+    }
+  }
+  catch(e){}
+ try{
+  if(idEstudiante > 0){
+    const respuesta = api.get(`/actividadesestudiantes/verTarea/${Number(id)}/${Number(idEstudiante)}`);
+    const tmp = (await respuesta).data;
+    mostrarAlerta("La tarea ya ha sido enviada", "info");
+  }
+ }catch(e){
+  console.log(e);
+  if(e.status == 500){
+    const windowBackground = document.getElementById("window-background-tarea");
+    windowBackground.style.display = "flex";
+    idactividad.value = parseInt(id);
+  }
+ }
 }
-
 const VerTareas = (id) =>{
 if(TipoUsuario === 'TUTOR')
   router.push("/listar_tareas/"+id);
 }
 
 const verTarea = (idActividad)=>{
-
+  let idEstudiante = 0;
   if(TipoUsuario === 'ESTUDIANTE'){
     const IdUsuario = parseInt(localStorage.getItem('idusuario'));
     api
@@ -111,7 +136,8 @@ const verTarea = (idActividad)=>{
           idEstudiante = res.data.idestudiante;
           router.push('/ver_tarea/'+idActividad+'/'+idEstudiante);
         })
-        .catch(() => {
+        .catch((e) => {
+          mostrarAlerta(e.response.data.messages.error, "error");
         });
   }
 

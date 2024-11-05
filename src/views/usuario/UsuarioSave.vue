@@ -2,7 +2,7 @@
 import { api } from "@/pluggins/axios";
 import { reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { enviarSolicitud } from "@/funciones/funciones";
+import { enviarSolicitud, mostrarAlerta } from "@/funciones/funciones";
 const route = useRoute();
 const idUsuario = route.params.id;
 const opcion = route.params.case;
@@ -66,13 +66,18 @@ const guardarUsuario = () => {
       ? (params.clave = form.clave)
       : delete params.clave;
     params.tipo = form.tipo;
-    enviarSolicitud(
+    if(form.tipo != "null"){
+      enviarSolicitud(
       "PUT",
       params,
       "/usuarios/update/" + idUsuario,
       "Registro guardado exitosamente",
       "/listar_usuarios"
-    );
+      );
+    }else{
+      mostrarAlerta("Debe elegir un tipo de usuario", "error", "cbTipo");
+    }
+    
   }
   // opcion de guardar nuevo usuario
   else {
@@ -80,13 +85,18 @@ const guardarUsuario = () => {
     params.email = form.email;
     params.clave = form.clave;
     params.tipo = form.tipo;
-    enviarSolicitud(
+    if(form.tipo != "null"){
+      enviarSolicitud(
       "POST",
       params,
       "/usuarios/create",
       "Registro guardado exitosamente",
       "/listar_usuarios"
-    );
+      );
+    }else{
+      mostrarAlerta("Debe elegir un tipo de usuario", "error", "cbTipo");
+    }
+    
   }
 };
 const limpiarCampos = () => {

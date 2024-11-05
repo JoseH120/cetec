@@ -12,7 +12,7 @@ const getUsuarios = async () => {
 };
 const eliminar = (id, user) => {
   Swal.fire({
-    title: `De verdad desea eliminar el usuario ${user}`,
+    title: `¿Desea eliminar el usuario ${user}?`,
     icon: "question",
     showCancelButton: true,
     customClass: {
