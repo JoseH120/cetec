@@ -59,25 +59,24 @@ const guardarUsuario = () => {
   if (opcion != 0) {
     params.usuario = form.usuario;
     // estado.usuario.email != form.email
-    form.email != null
+    form.email != null && form.email != estado.usuario.email
       ? (params.email = form.email)
-      : console.log("delete params.email");
+      : delete params.email;
     form.clave != null && estado.cambiarClave
       ? (params.clave = form.clave)
       : delete params.clave;
     params.tipo = form.tipo;
-    if(form.tipo != "null"){
+    if (form.tipo != "null") {
       enviarSolicitud(
-      "PUT",
-      params,
-      "/usuarios/update/" + idUsuario,
-      "Registro guardado exitosamente",
-      "/listar_usuarios"
+        "PUT",
+        params,
+        "/usuarios/update/" + idUsuario,
+        "Registro guardado exitosamente",
+        "/listar_usuarios"
       );
-    }else{
+    } else {
       mostrarAlerta("Debe elegir un tipo de usuario", "error", "cbTipo");
     }
-    
   }
   // opcion de guardar nuevo usuario
   else {
@@ -85,18 +84,17 @@ const guardarUsuario = () => {
     params.email = form.email;
     params.clave = form.clave;
     params.tipo = form.tipo;
-    if(form.tipo != "null"){
+    if (form.tipo != "null") {
       enviarSolicitud(
-      "POST",
-      params,
-      "/usuarios/create",
-      "Registro guardado exitosamente",
-      "/listar_usuarios"
+        "POST",
+        params,
+        "/usuarios/create",
+        "Registro guardado exitosamente",
+        "/listar_usuarios"
       );
-    }else{
+    } else {
       mostrarAlerta("Debe elegir un tipo de usuario", "error", "cbTipo");
     }
-    
   }
 };
 const limpiarCampos = () => {
