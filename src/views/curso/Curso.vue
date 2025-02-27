@@ -12,10 +12,13 @@ import router from "@/router";
 const route = useRoute();
 const idCurso = ref(parseInt(route.params.idCurso));
 const Actividades = ref(null);
+const Lecciones = ref(null);
 const TipoUsuario = localStorage.getItem("tipo");
 const IdUsuario = localStorage.getItem("idusuario");
 const idactividad = ref(0);
 const Actividad = ref(null);
+
+const Vista = ref("ACTIVIDADES");
 
 
 const curso = reactive({
@@ -45,6 +48,15 @@ const getActividades = async () => {
   catch(e){}
   
 };
+
+const getLecciones = async () => {
+  try{
+    const respuesta = api.get(`/lecciones/leccionesByCurso/${idCurso.value}`);
+    if((await respuesta).status != 500)
+      Lecciones.value = (await respuesta).data;
+  }
+  catch(e){}
+}
 
 const openModal = (actividad = null) => {
   if(actividad){
@@ -92,11 +104,6 @@ const refresh = () => {
 
 
 const openModalTarea = async (id)=>{
-  /*
-  const windowBackground = document.getElementById("window-background-tarea");
-  windowBackground.style.display = "flex";
-  idactividad.value = parseInt(id);
-  */
   
   let idEstudiante = 0;
   try{
@@ -143,6 +150,11 @@ const verTarea = (idActividad)=>{
 
 }
 
+const cambiarVista = (vista) =>{
+  Vista.value = vista;
+  getLecciones();
+}
+
 getCurso(idCurso.value);
 getActividades();
 </script>
@@ -160,8 +172,19 @@ getActividades();
     <ActividadSave :idCurso="idCurso" :actividad="Actividad" @refresh="refresh" />
 
     <TareasSave :idActividad="idactividad" />
+    
     <div class="contenido">
       <h2>Curso de {{ curso.NombreCurso }}</h2>
+      <div class="Nav">
+        <ul class="Ul">
+          <li class="Li">
+            <label class="Label" @click="cambiarVista('LECCIONES')">Lecciones</label>
+          </li>
+          <li class="Li">
+            <label class="Label" @click="cambiarVista('ACTIVIDADES')">Actividades</label>
+          </li>
+        </ul>
+      </div>
       <div>
         <button
           v-if="TipoUsuario != 'ESTUDIANTE'"
@@ -171,9 +194,15 @@ getActividades();
         >
           <i class="fa fa-plus" aria-hidden="true"></i> Actividad
         </button>
+        <select class="open-button ">
+          <option value="1">Actividad</option>
+          <option value="2">Leccion</option>
+        </select>
+
       </div>
 
-      <section
+      <section 
+      v-if="Vista == 'ACTIVIDADES'"
         v-for="(act, i) in Actividades"
         :key="act.IdActividad"
         :id="act.IdActividad"
@@ -209,6 +238,25 @@ getActividades();
           title="Descargar tareas de los estudiantes">
             <i class="fa-solid fa-download"></i>
           </button>
+        </div>
+      </section>
+      <section v-else
+        v-for="(lec, i) in Lecciones"
+        :key="lec.IdLeccion"
+        :id="lec.IdLeccion"
+      >
+        <h3 v-text="(lec.Tema)"></h3>
+        <p v-text="(lec.Descripcion)"></p>
+        <a :href="lec.Url">enlace</a>
+        <div>
+          <section>
+            <p>parrafo</p>
+            <div>
+              <a href="" style="margin: 20px;">Multimedia</a>
+              <button style="float: left;"><</button>
+              <button style="float: right;">></button>
+            </div>
+          </section>
         </div>
       </section>
     </div>
@@ -267,4 +315,32 @@ section {
 .cursor:hover{
   cursor: pointer;
 }
+
+.Nav{
+  float: left;
+  width: 100%;
+  margin-bottom: 0;
+}
+.Ul{
+  list-style: none;
+  overflow: hidden;
+}
+.Li{
+  float: left;
+  font-size: 20px;
+}
+
+.Label{
+  display: block;
+  padding: 5px;
+  border-radius: 10px;
+  color: darkgrey;
+}
+
+.Label:hover{
+  cursor: pointer;
+  background-color: lightgray;
+  color: black;
+}
+
 </style>
