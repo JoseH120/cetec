@@ -20,6 +20,7 @@ const Actividad = ref(null);
 
 const Vista = ref("ACTIVIDADES");
 
+let btnCrear = 'Actividad';
 
 const curso = reactive({
   IdCurso: 0,
@@ -59,12 +60,15 @@ const getLecciones = async () => {
 }
 
 const openModal = (actividad = null) => {
-  if(actividad){
-    Actividad.value = actividad;
+  if(btnCrear == 'Leccion'){
+    alert('Creare leccion');
+  }else if(btnCrear == 'Actividad'){
+    if(actividad){
+      Actividad.value = actividad;
+    }
+    const windowBackground = document.getElementById("window-background");
+    windowBackground.style.display = "flex";
   }
-  
-  const windowBackground = document.getElementById("window-background");
-  windowBackground.style.display = "flex";
 };
 
 const eliminarActividad = (actividad, id) => {
@@ -151,6 +155,11 @@ const verTarea = (idActividad)=>{
 }
 
 const cambiarVista = (vista) =>{
+  if(vista == 'LECCIONES'){
+    btnCrear = 'Leccion';    
+  }else{
+    btnCrear = 'Actividad';
+  }
   Vista.value = vista;
   getLecciones();
 }
@@ -191,13 +200,10 @@ getActividades();
           class="open-button mb-2"
           id="open-button"
           @click="openModal"
+
         >
-          <i class="fa fa-plus" aria-hidden="true"></i> Actividad
+          <i class="fa fa-plus" aria-hidden="true"></i> {{ btnCrear }}
         </button>
-        <select class="open-button ">
-          <option value="1">Actividad</option>
-          <option value="2">Leccion</option>
-        </select>
 
       </div>
 
