@@ -162,7 +162,7 @@ const verTarea = (idActividad)=>{
 
 const cambiarVista = (vista) =>{
   if(vista == 'LECCIONES'){
-    btnCrear = 'Leccion';    
+    btnCrear = 'Leccion'; 
   }else{
     btnCrear = 'Actividad';
   }
@@ -193,12 +193,12 @@ getActividades();
     <div class="contenido">
       <h2>Curso de {{ curso.NombreCurso }}</h2>
       <div class="Nav">
-        <ul class="Ul">
+        <ul class="Ul">          
           <li class="Li">
-            <label class="Label" @click="cambiarVista('LECCIONES')">Lecciones</label>
+            <label :class="btnCrear=='Actividad'?'Label bg-secondary':'Label'" @click="cambiarVista('ACTIVIDADES')">Actividades</label>
           </li>
           <li class="Li">
-            <label class="Label" @click="cambiarVista('ACTIVIDADES')">Actividades</label>
+            <label :class="btnCrear=='Leccion'?'Label bg-secondary': 'Label' " @click="cambiarVista('LECCIONES')">Lecciones</label>
           </li>
         </ul>
       </div>

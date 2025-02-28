@@ -2,6 +2,11 @@
 import { onMounted, onUpdated, reactive, ref, watch } from "vue";
 import { api } from "@/pluggins/axios";
 
+// variable reactiva para cambiar el tipo de recurso a indexar a la leccion.
+const recurso = reactive({
+  tipo: '',
+  activar: false,
+});
 
 const props = defineProps({ idCurso: Number, leccion: Object });
 const form = reactive({
@@ -18,7 +23,6 @@ const leccion = ref(props.leccion);
 const emit = defineEmits(["refresh"]);
 
 const file = ref(null);
-
 
 //Cuando cambia el arcchivo actualiza la variable file
 const cargarArchivo = (e) => {
@@ -48,7 +52,7 @@ const closeWindow = () => {
   }, 1000);
 };
 
-const guardarActividad = async () => {
+const guardarLeccion = async () => {
   const forms = document.getElementById("Formulario");
 
   const formulario = new FormData();
@@ -56,12 +60,20 @@ const guardarActividad = async () => {
 
   formulario.append("Tema", form.Tema);
   formulario.append("Descripcion", form.Descripcion);
-  formulario.append("UrlRecurso", file.value);
+
+  // Validando si es url o archivo local.
+  recurso.activar ? 
+    recurso.tipo == 'enlace' ? formulario.append('Url', form.Url) : 
+      recurso.tipo == 'archivo' ? formulario.append('Url',file.value) 
+    :  '' 
+  : '';  
+
+  formulario.append("FechaPublicacion", form.FechaPublicacion);
   formulario.append("IdCurso", form.IdCurso);
 
-  if(form.IdActividad != null){
+  if(form.IdLeccion != null){
     //Actualizar
-    const respuesta = await api.post("/actividades/update/"+form.IdActividad, formulario, {
+    const respuesta = await api.post("/lecciones/update/"+form.IdLeccion, formulario, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       "X-Requested-With": "XMLHttpRequest",
@@ -70,7 +82,7 @@ const guardarActividad = async () => {
   }
   else{
     //Guardar
-    const respuesta = await api.post("/actividades/create", formulario, {
+    const respuesta = await api.post("/lecciones/create", formulario, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       "X-Requested-With": "XMLHttpRequest",
@@ -85,19 +97,22 @@ const guardarActividad = async () => {
 
   
 };
+
 onMounted ( ()=> {
   fechaActual();
 })
+
 onUpdated(()=>{
-fechaActual();
-  // if(props.actividad){
-  //   if(form.IdActividad != props.actividad.IdActividad){
-  //     form.IdActividad = props.actividad.IdActividad; 
-  //     form.Tema = props.actividad.Tema;
-  //     form.Descripcion = props.actividad.Descripcion;
-  //     form.IdCurso = props.idCurso;
-  //   }
-  // }
+  // fechaActual();
+  if(props.leccion){
+    if(form.IdLeccion != props.actividad.IdLeccion){
+      form.IdLeccion = props.actividad.IdLeccion; 
+      form.Tema = props.actividad.Tema;
+      form.Descripcion = props.actividad.Descripcion;
+      form.IdCurso = props.idCurso;
+      // form.FechaPublicacion = props.FechaPublicacion;
+    }
+  }
 });
 
 const fechaActual =  () => {
@@ -169,29 +184,31 @@ document.getElementById('FechaPublicacion').value = fecha_hora;
           </div>
 
           <div class="form-group row mt-2">
-            <label for="UrlRecurso" class="col-sm-2 col-form-label"
+            <label for="" class="col-sm-2 col-form-label"
               >Recurso: 
-              <input type="checkbox" id="urlActivo" :value="validarRecurso.value"> {{ validarRecurso ? 'Si' : 'No' }}
+              <input type="checkbox" v-model="recurso.validar"> {{ recurso.validar ? 'Si' : 'No' }}
             </label>
 
-            <div class="col-sm-10">
-              <select class="form-control" name="" id="" >
+            <div class="col-sm-10" >
+              <select class="form-control" v-model="recurso.tipo" :disabled="!recurso.validar">
                 <option value="enlace" selected>Enlace</option>
-                <option value="archivo" >Archivo</option>
+                <option value="archivo">Archivo</option>
               </select>
               <input 
+                v-if="recurso.tipo == 'archivo'"
                 type="file"
                 class="form-control"
                 @change="cargarArchivo"
                 id="UrlRecurso"
-                
+                :disabled="!recurso.validar"
               />
-              <input 
-              class="form-control"
-               type="text"
+              <input v-else
+                class="form-control"
+                type="text"
                 id="Url"
                 placeholder="pegar enlace"
-                >
+                :disabled="!recurso.validar"
+              >
 
             </div>
           </div>
