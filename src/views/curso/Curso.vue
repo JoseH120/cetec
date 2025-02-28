@@ -2,6 +2,7 @@
 import SideBar from "../components/SideBar.vue";
 import ActividadSave from "../actividades/ActividadSave.vue";
 import TareasSave from "../tareas/TareasSave.vue";
+import LeccionSave from "../leccion/LeccionSave.vue"
 import { useRoute } from "vue-router";
 import { api } from "@/pluggins/axios";
 import { reactive, ref } from "vue";
@@ -16,7 +17,9 @@ const Lecciones = ref(null);
 const TipoUsuario = localStorage.getItem("tipo");
 const IdUsuario = localStorage.getItem("idusuario");
 const idactividad = ref(0);
+const idleccion = ref(0);
 const Actividad = ref(null);
+const Leccion = ref(null);
 
 const Vista = ref("ACTIVIDADES");
 
@@ -61,7 +64,10 @@ const getLecciones = async () => {
 
 const openModal = (actividad = null) => {
   if(btnCrear == 'Leccion'){
-    alert('Creare leccion');
+    // alert('Creare leccion');
+    const windowBackgroundLeccion = document.getElementById("window-leccion-background");
+    windowBackgroundLeccion.style.display = "flex";
+
   }else if(btnCrear == 'Actividad'){
     if(actividad){
       Actividad.value = actividad;
@@ -182,6 +188,8 @@ getActividades();
 
     <TareasSave :idActividad="idactividad" />
     
+    <LeccionSave :idLeccion="idleccion" />
+
     <div class="contenido">
       <h2>Curso de {{ curso.NombreCurso }}</h2>
       <div class="Nav">
