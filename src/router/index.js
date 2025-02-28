@@ -92,6 +92,16 @@ const router = createRouter({
       name: "VerTarea",
       component: () => import("../views/tareas/VerTarea.vue"),
     },
+    {
+      path: "/listar_solicitudes/",
+      name: "SolicitudListar",
+      component: () => import("../views/solicitudes/SolicitudListar.vue"),
+    },
+    {
+      path: "/guardar_solicitud/:id?/:case?",
+      name: "SolicitudSave",
+      component: () => import("../views/solicitudes/SolicitudSave.vue"),
+    },
   ],
 });
 

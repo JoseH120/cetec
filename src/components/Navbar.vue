@@ -38,6 +38,7 @@
         >
           <Navlink path="/" text="home" />
           <Navlink :path="`/my/index/${user.id}`" text="Principal" />
+          <Navlink path="/listar_solicitudes/" text="Mis Tramites"/>
           <Navlink path="/about" text="About" />
         </ul>
         <!-- NAV PARA TUTORES -->
