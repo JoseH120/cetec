@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUpdated, reactive, ref } from "vue";
+import { onMounted, onUpdated, reactive, ref, watch } from "vue";
 import { api } from "@/pluggins/axios";
 import Swal from "sweetalert2";
 
@@ -26,7 +26,7 @@ const form = reactive({
   IdCurso: null,
 });
 
-const leccion = ref(props.leccion);
+const leccion = ref();
 
 const emit = defineEmits(["refresh"]);
 
@@ -39,7 +39,6 @@ const cargarArchivo = (e) => {
   } else {
     file.value = null;
   }
-  
 };
 
 window.addEventListener("click", (e) => {
@@ -103,9 +102,10 @@ const guardarLeccion = async () => {
       cancelButtonText: '<i class="fa-solid fa-circle-xmark"></i>No agregar',
       }).then((res)=>{
         if (res.isConfirmed){
+          console.log(response.data.IdLeccion);
           forms.reset();
           closeWindow();
-          emit("refresh",response.data.IdLeccion);
+          emit("refresh");
         }else{
           closeWindow();
           forms.reset();
@@ -114,18 +114,12 @@ const guardarLeccion = async () => {
       });  
     });
   }
-
-  
-  // forms.reset();
-  // closeWindow();
-  // emit("refresh");
-
   
 };
 
-onMounted ( ()=> {
-  fechaActual();
-})
+onMounted(()=>{
+
+});
 
 onUpdated(()=>{
   // fechaActual();
@@ -140,15 +134,6 @@ onUpdated(()=>{
   }
 });
 
-const fechaActual =  () => {
-  var hoy = new Date()
-var fecha = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + hoy.getDate()).slice(-2) ;
-var hora = ('0' + hoy.getHours()).slice(-2) + ':' + ('0' + hoy.getMinutes()).slice(-2);
-
-var fecha_hora = fecha +'T'+ hora;
-document.getElementById('FechaPublicacion').value = fecha_hora;
-}
-
 </script>
 <template>
   <div class="body-contenido">
@@ -160,7 +145,7 @@ document.getElementById('FechaPublicacion').value = fecha_hora;
         <h2>Leccion</h2>
         <form
           id="Formulario"
-          @submit.prevent="guardarLeccion()"
+          @submit.prevent="guardarSeccion()"
           enctype="multipart/form-data"
         >
           <div class="form-group row mt-2">

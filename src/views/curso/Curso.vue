@@ -95,7 +95,6 @@ const eliminarActividad = (actividad, id) => {
         .then(() => {
           getActividades();
           mostrarAlerta("Registro eliminado", "success");
-          
         })
         .catch(() => {
           mostrarAlerta("Error al elimar", "error");
@@ -185,10 +184,12 @@ getActividades();
     
 
     <ActividadSave :idCurso="idCurso" :actividad="Actividad" @refresh="refresh" />
+    
+    <LeccionSave :idCurso="idCurso" :leccion="Leccion" @refresh="refresh" />
 
+    
     <TareasSave :idActividad="idactividad" />
     
-    <LeccionSave :idLeccion="idleccion" />
 
     <div class="contenido">
       <h2>Curso de {{ curso.NombreCurso }}</h2>
