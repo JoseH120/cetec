@@ -3,7 +3,8 @@ import { reactive } from "vue";
 
 let props = defineProps({
   idCurso: Number,
-  actividades: Object,
+  lista: Object,
+  Vista: String,
   nombreCurso: String,
 });
 
@@ -32,10 +33,19 @@ const toggleSideBar = () => {
       <span class="span" id="span">{{ props.nombreCurso }}</span>
     </div>
     <nav class="navegacion">
-      <ul>
-        <li v-for="(acti, i) in actividades" :key="acti.IdActividad">
-          <a :href="'#' + acti.IdActividad" class="bg-light">
-            <i class="fa-solid fa-greater-than"></i><span>{{ acti.Tema }}</span>
+      <ul v-if="Vista == 'ACTIVIDADES'">
+        <li v-for="(element, i) in lista" :key="element.IdActividad">
+          <a :href="'#' + element.IdActividad" class="bg-light">
+            <i class="fa-solid fa-greater-than"></i
+            ><span>{{ element.Tema }}</span>
+          </a>
+        </li>
+      </ul>
+      <ul v-else-if="Vista == 'LECCIONES'">
+        <li v-for="(element, i) in lista" :key="element.IdLeccion">
+          <a :href="'#' + element.IdLeccion" class="bg-light">
+            <i class="fa-solid fa-greater-than"></i
+            ><span>{{ element.Tema }}</span>
           </a>
         </li>
       </ul>
