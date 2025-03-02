@@ -1,35 +1,37 @@
 <script setup>
-import { onMounted, onUpdated, reactive, ref, watch } from "vue";
+import { onUpdated, reactive, ref } from "vue";
 import { api } from "@/pluggins/axios";
 import Swal from "sweetalert2";
 
-// Constante que sostendra el sweataert
-const AgregarSeccionesSWAL = Swal.mixin({
+// Definir una constante que contendran las variables props desde Leccion.
+const props = defineProps({ IdLeccion: Number, seccion: Object });
+
+// Establecer emit para el componente padre Cursos
+const emit = defineEmits(["refresh"]);
+
+// Constante que sostendra el sweatalert
+const Alert = Swal.mixin({
   customClass: {
     confirmButton: "btn btn-success me-3",
     cancelButton: "btn btn-danger",
   },
-}); 
-// variable reactiva para cambiar el tipo de recurso a indexar a la leccion.
+});
+
+// variable reactiva para cambiar el tipo de recurso a indexar a la seccion.
 const recurso = reactive({
-  tipo: '',
+  tipo: "",
   activar: false,
 });
 
-const props = defineProps({ idCurso: Number, leccion: Object });
+// constante que vincula los campos del formulario
 const form = reactive({
-  IdLeccion: null,
-  Tema: "",
-  Descripcion: "",
-  Url : "",
-  FechaPublicacion: "",
-  IdCurso: null,
+  IdSeccion: null,
+  Contenido: "",
+  Url: "",
+  IdLeccion: "",
 });
 
-const leccion = ref();
-
-const emit = defineEmits(["refresh"]);
-
+// constante que contendra referencia a un archivo local subido
 const file = ref(null);
 
 //Cuando cambia el arcchivo actualiza la variable file
@@ -41,17 +43,18 @@ const cargarArchivo = (e) => {
   }
 };
 
+// Metodo que cierra ventana del formulario al dar click fuera del formulario
 window.addEventListener("click", (e) => {
   const windowBackground = document.getElementById("window-leccion-background");
   if (e.target == windowBackground) closeWindow();
 });
 
+// Metodo para cerrar la ventana formulario
 const closeWindow = () => {
   const windowContainer = document.getElementById("window-leccion-container");
   const windowBackground = document.getElementById("window-leccion-background");
 
   windowContainer.classList.add("close-form");
-
 
   setTimeout(() => {
     windowContainer.classList.remove("close-form");
@@ -59,86 +62,82 @@ const closeWindow = () => {
   }, 1000);
 };
 
-const guardarLeccion = async () => {
+// Metodo que se ejecuta para enviar peticion de crear un registro a url
+// http://localhost/sistema/api/secciones/crear
+// Que cuenta con un formulario en el body de la solicitud
+const guardarSeccion = async () => {
   const forms = document.getElementById("Formulario");
-
+  //Declaramos una constante que contendra el valor del POST
   const formulario = new FormData();
-  form.IdCurso = props.idCurso;
-
-  formulario.append("Tema", form.Tema);
-  formulario.append("Descripcion", form.Descripcion);
-
-  // Validando si es url o archivo local.
-  recurso.activar ? 
-    recurso.tipo == 'enlace' ? formulario.append('Url', form.Url) : 
-      recurso.tipo == 'archivo' ? formulario.append('Url',file.value) 
-    :  '' 
-  : '';
-  formulario.append("FechaPublicacion", form.FechaPublicacion);
-  formulario.append("IdCurso", form.IdCurso);
-
-  if(form.IdLeccion != null){
+  // Asignamos el props IdLeccion a la propiedad IdLeccion del objeto form
+  form.IdLeccion = props.IdLeccion;
+  // Definicion de las propiedades que se enviaran en la solicitud a la API
+  formulario.append("Contenido", form.Contenido);
+  // Validando si el recurso es una url o un archivo local.
+  recurso.activar
+    ? recurso.tipo == "enlace"
+      ? formulario.append("Url", form.Url)
+      : recurso.tipo == "archivo"
+      ? formulario.append("Url", file.value)
+      : ""
+    : "";
+  // Validamos si una seccion esta creandose o editandose
+  if (form.IdSeccion != null) {
     //Actualizar
-    const respuesta = await api.post("/lecciones/update/"+form.IdLeccion, formulario, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "X-Requested-With": "XMLHttpRequest",
-    },
-  });
-  }
-  else{
-    //Guardar
-    const respuesta = await api.post("/lecciones/create", formulario, {
+    api.post("/secciones/update/" + form.IdSeccion, formulario, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "X-Requested-With": "XMLHttpRequest",
       },
-    }).then((response)=>{
-      AgregarSeccionesSWAL.fire({
-        title: '¿Desea agregar secciones?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: '<i class="fa-solid fa-square-check"></i>Si, agregar',
-      cancelButtonText: '<i class="fa-solid fa-circle-xmark"></i>No agregar',
-      }).then((res)=>{
-        if (res.isConfirmed){
-          console.log(response.data.IdLeccion);
-          forms.reset();
-          closeWindow();
-          emit("refresh");
-        }else{
-          closeWindow();
-          forms.reset();
-          emit("refresh");
-        }
-      });  
     });
+  } else {
+    //Guardar
+    api
+      .post("/secciones/create", formulario, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+      .then((response) => {
+        Alert.fire({
+          title: "¿Desea agregar secciones?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText:
+            '<i class="fa-solid fa-square-check"></i>Si, agregar',
+          cancelButtonText:
+            '<i class="fa-solid fa-circle-xmark"></i>No agregar',
+        }).then((res) => {
+          if (res.isConfirmed) {
+            console.log(response.data.IdSeccion);
+            forms.reset();
+            closeWindow();
+            emit("refresh");
+          } else {
+            closeWindow();
+            forms.reset();
+            emit("refresh");
+          }
+        });
+      });
   }
-  
 };
 
-onMounted(()=>{
-
-});
-
-onUpdated(()=>{
+onUpdated(() => {
   // fechaActual();
-  if(props.leccion){
-    if(form.IdLeccion != props.actividad.IdLeccion){
-      form.IdLeccion = props.actividad.IdLeccion; 
-      form.Tema = props.actividad.Tema;
-      form.Descripcion = props.actividad.Descripcion;
-      form.IdCurso = props.idCurso;
-      // form.FechaPublicacion = props.FechaPublicacion;
+  if (props.seccion) {
+    if (form.IdSeccion != props.seccion.IdLeccion) {
+      form.IdLeccion = props.seccion.IdLeccion;
+      form.Contenido = props.seccion.Contenido;
     }
   }
 });
-
 </script>
 <template>
   <div class="body-contenido">
-    <div class="window-leccion-background" id="window-leccion-background">
-      <div class="window-leccion-container" id="window-leccion-container">
+    <div class="window-seccion-background" id="window-seccion-background">
+      <div class="window-seccion-container" id="window-seccion-container">
         <button class="close-button" id="close-button" @click="closeWindow">
           <i class="fa fa-times icon-x" aria-hidden="true"></i>
         </button>
@@ -149,7 +148,7 @@ onUpdated(()=>{
           enctype="multipart/form-data"
         >
           <div class="form-group row mt-2">
-            <label for="IdLeccion" class="col-sm-2 col-form-label" hidden
+            <label for="IdSeccion" class="col-sm-2 col-form-label" hidden
               >ID:
             </label>
             <div class="col-sm-10">
@@ -157,7 +156,7 @@ onUpdated(()=>{
                 type="number"
                 class="form-control"
                 id="IdLeccion"
-                v-model="form.IdLeccion"
+                v-model="form.IdSeccion"
                 hidden
                 disabled
               />
@@ -165,28 +164,14 @@ onUpdated(()=>{
           </div>
 
           <div class="form-group row mt-2">
-            <label for="Tema" class="col-sm-2 col-form-label">Tema: </label>
-            <div class="col-sm-10">
-              <input
-                type="text"
-                class="form-control"
-                id="Tema"
-                v-model="form.Tema"
-                required
-                autofocus
-              />
-            </div>
-          </div>
-
-          <div class="form-group row mt-2">
-            <label for="Descripcion" class="col-sm-2 col-form-label"
-              >Descripcion:
+            <label for="Contenido" class="col-sm-2 col-form-label"
+              >Contenido:
             </label>
             <div class="col-sm-10">
               <textarea
-                id="Descripcion"
+                id="Contenido"
                 class="form-control"
-                v-model="form.Descripcion"
+                v-model="form.Contenido"
                 required
               >
               </textarea>
@@ -195,16 +180,20 @@ onUpdated(()=>{
 
           <div class="form-group row mt-2">
             <label for="" class="col-sm-2 col-form-label"
-              >Recurso: 
-              <input type="checkbox" v-model="recurso.validar"> {{ recurso.validar ? 'Si' : 'No' }}
+              >Recurso: <input type="checkbox" v-model="recurso.validar" />
+              {{ recurso.validar ? "Si" : "No" }}
             </label>
 
-            <div class="col-sm-10" >
-              <select class="form-control" v-model="recurso.tipo" :disabled="!recurso.validar">
+            <div class="col-sm-10">
+              <select
+                class="form-control"
+                v-model="recurso.tipo"
+                :disabled="!recurso.validar"
+              >
                 <option value="enlace" selected>Enlace</option>
                 <option value="archivo">Archivo</option>
               </select>
-              <input 
+              <input
                 v-if="recurso.tipo == 'archivo'"
                 type="file"
                 class="form-control"
@@ -212,44 +201,13 @@ onUpdated(()=>{
                 id="UrlRecurso"
                 :disabled="!recurso.validar"
               />
-              <input v-else
+              <input
+                v-else
                 class="form-control"
                 type="text"
                 id="Url"
                 placeholder="pegar enlace"
                 :disabled="!recurso.validar"
-              >
-
-            </div>
-          </div>
-
-          <div class="form-group row mt-2">
-            <label for="IdCurso" class="col-sm-2 col-form-label" hidden
-              >ID Curso:
-            </label>
-            <div class="col-sm-10">
-              <input
-                type="number"
-                class="form-control"
-                id="IdCurso"
-                v-model="form.IdCurso"
-                value="{{props.idCurso}}"
-                hidden
-                disabled
-              />
-            </div>
-          </div>
-
-          <div class="form-group row mt-2">
-            <label for="FechaPublicacion" class="col-sm-2 col-form-label"
-              >Fecha publicación:
-            </label>
-            <div class="col-sm-10">
-              <input
-                type="datetime-local"
-                class="form-control"
-                id="FechaPublicacion"
-                v-model="form.FechaPublicacion"
               />
             </div>
           </div>
@@ -277,7 +235,7 @@ onUpdated(()=>{
   margin: 100px 0 0 0;
 }
 
-.window-leccion-background {
+.window-seccion-background {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -292,7 +250,7 @@ onUpdated(()=>{
   overflow: hidden;
 }
 
-.window-leccion-container {
+.window-seccion-container {
   position: relative;
   background-color: #fff;
   width: 600px;

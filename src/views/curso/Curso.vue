@@ -3,6 +3,9 @@ import SideBar from "../components/SideBar.vue";
 import ActividadSave from "../actividades/ActividadSave.vue";
 import TareasSave from "../tareas/TareasSave.vue";
 import LeccionSave from "../leccion/LeccionSave.vue";
+import SeccionItem from "../secciones/SeccionItem.vue";
+import SeccionSave from "../secciones/SeccionSave.vue";
+
 import { useRoute } from "vue-router";
 import { api } from "@/pluggins/axios";
 import { reactive, ref } from "vue";
@@ -11,15 +14,15 @@ import { mostrarAlerta } from "@/funciones/funciones";
 import router from "@/router";
 
 const route = useRoute();
+const TipoUsuario = localStorage.getItem("tipo");
+const IdUsuario = localStorage.getItem("idusuario");
 const idCurso = ref(parseInt(route.params.idCurso));
 const Actividades = ref(null);
 const Lecciones = ref(null);
-const TipoUsuario = localStorage.getItem("tipo");
-const IdUsuario = localStorage.getItem("idusuario");
 const idactividad = ref(0);
-const idleccion = ref(0);
 const Actividad = ref(null);
 const Leccion = ref(null);
+const Seccion = ref(null);
 
 const Vista = ref("ACTIVIDADES");
 
@@ -57,19 +60,23 @@ const getLecciones = async () => {
   } catch (e) {}
 };
 
-const openModal = (actividad = null) => {
-  if (btnCrear == "Leccion") {
+const openModal = (item = null) => {
+  if (Vista.value == "LECCIONES") {
     // alert('Creare leccion');
     const windowBackgroundLeccion = document.getElementById(
       "window-leccion-background"
     );
     windowBackgroundLeccion.style.display = "flex";
-  } else if (btnCrear == "Actividad") {
-    if (actividad) {
-      Actividad.value = actividad;
+  } else if (Vista.value == "ACTIVIDADES") {
+    if (item) {
+      Actividad.value = item;
     }
     const windowBackground = document.getElementById("window-background");
     windowBackground.style.display = "flex";
+  } else if (Vista.value == "SECCIONES") {
+    if (item) {
+      Seccion.value = item;
+    }
   }
 };
 
@@ -181,6 +188,8 @@ refresh();
 
     <LeccionSave :idCurso="idCurso" :leccion="Leccion" @refresh="refresh" />
 
+    <SeccionSave :idLeccion="0" />
+
     <TareasSave :idActividad="idactividad" />
 
     <div class="contenido">
@@ -278,16 +287,8 @@ refresh();
         <h3 v-text="lec.Tema"></h3>
         <p v-text="lec.Descripcion"></p>
         <a :href="lec.Url">enlace</a>
-        <div>
-          <section>
-            <p>parrafo</p>
-            <div>
-              <a href="" style="margin: 20px">Multimedia</a>
-              <button style="float: left"><</button>
-              <button style="float: right">></button>
-            </div>
-          </section>
-        </div>
+
+        <SeccionItem :IdLeccion="lec.IdLeccion"></SeccionItem>
       </section>
     </div>
   </div>

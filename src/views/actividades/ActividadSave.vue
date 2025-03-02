@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUpdated, reactive, ref, watch } from "vue";
+import { onUpdated, reactive, ref } from "vue";
 import { api } from "@/pluggins/axios";
 
 const props = defineProps({ idCurso: Number, actividad: Object });
@@ -10,7 +10,7 @@ const form = reactive({
   IdCurso: 0,
 });
 
-const activida = ref(props.actividad);
+const actividad = ref(props.actividad);
 
 const emit = defineEmits(["refresh"]);
 
@@ -38,8 +38,8 @@ const closeWindow = () => {
 
   form.IdActividad = 0;
   form.Tema = "";
-  form.Descripcion ="";
-  form.IdCurso= 0; 
+  form.Descripcion = "";
+  form.IdCurso = 0;
 
   setTimeout(() => {
     windowContainer.classList.remove("close");
@@ -58,42 +58,42 @@ const guardarActividad = async () => {
   formulario.append("UrlRecurso", file.value);
   formulario.append("IdCurso", form.IdCurso);
 
-  if(form.IdActividad != null){
+  if (form.IdActividad != null) {
     //Actualizar
-    const respuesta = await api.post("/actividades/update/"+form.IdActividad, formulario, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "X-Requested-With": "XMLHttpRequest",
-    },
-  });
-  }
-  else{
+    const respuesta = await api.post(
+      "/actividades/update/" + form.IdActividad,
+      formulario,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      }
+    );
+  } else {
     //Guardar
     const respuesta = await api.post("/actividades/create", formulario, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "X-Requested-With": "XMLHttpRequest",
-    },
-  });
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
   }
   forms.reset();
   closeWindow();
   emit("refresh");
-
-  
 };
 
-onUpdated(()=>{
-  if(props.actividad){
-    if(form.IdActividad != props.actividad.IdActividad){
-      form.IdActividad = props.actividad.IdActividad; 
+onUpdated(() => {
+  if (props.actividad) {
+    if (form.IdActividad != props.actividad.IdActividad) {
+      form.IdActividad = props.actividad.IdActividad;
       form.Tema = props.actividad.Tema;
       form.Descripcion = props.actividad.Descripcion;
       form.IdCurso = props.idCurso;
     }
   }
 });
-
 </script>
 <template>
   <div class="body-contenido">
