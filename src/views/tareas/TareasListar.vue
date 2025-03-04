@@ -2,9 +2,10 @@
 import { mostrarAlerta } from "@/funciones/funciones";
 import { api } from "@/pluggins/axios";
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
+const router = useRouter();
 const idActividad = parseInt(route.params.idActividad) || 0;
 
 const Tareas = ref(null);
@@ -80,7 +81,9 @@ onMounted(() => {
     >
       <i class="fa-solid fa-download"></i> Descargar
     </button>
-
+    <button class="btn btn-link" @click="router.go(-1)">
+      <i class="fa-solid fa-arrow-left"></i> Regresar
+    </button>
     <div class="row">
       <label class="form-label col-2"
         >Modo:

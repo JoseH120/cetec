@@ -1,13 +1,18 @@
 <script setup>
 import { onUpdated, reactive, ref } from "vue";
 import { api } from "@/pluggins/axios";
+import { enviarSolicitud } from "@/funciones/funciones";
 import Swal from "sweetalert2";
 
 // Definir una constante que contendran las variables props desde Leccion.
-const props = defineProps({ IdLeccion: Number, seccion: Object });
+const props = defineProps({
+  IdLeccion: String,
+  TemaLeccion: String,
+  seccion: Object,
+});
 
 // Establecer emit para el componente padre Cursos
-const emit = defineEmits(["refresh"]);
+// const emit = defineEmits(["refreshListSeccion"]);
 
 // Constante que sostendra el sweatalert
 const Alert = Swal.mixin({
@@ -26,9 +31,9 @@ const recurso = reactive({
 // constante que vincula los campos del formulario
 const form = reactive({
   IdSeccion: null,
+  IdLeccion: null,
   Contenido: "",
   Url: "",
-  IdLeccion: "",
 });
 
 // constante que contendra referencia a un archivo local subido
@@ -45,14 +50,14 @@ const cargarArchivo = (e) => {
 
 // Metodo que cierra ventana del formulario al dar click fuera del formulario
 window.addEventListener("click", (e) => {
-  const windowBackground = document.getElementById("window-leccion-background");
+  const windowBackground = document.getElementById("window-background-seccion");
   if (e.target == windowBackground) closeWindow();
 });
 
 // Metodo para cerrar la ventana formulario
 const closeWindow = () => {
-  const windowContainer = document.getElementById("window-leccion-container");
-  const windowBackground = document.getElementById("window-leccion-background");
+  const windowContainer = document.getElementById("window-container-seccion");
+  const windowBackground = document.getElementById("window-background-seccion");
 
   windowContainer.classList.add("close-form");
 
@@ -70,7 +75,7 @@ const guardarSeccion = async () => {
   //Declaramos una constante que contendra el valor del POST
   const formulario = new FormData();
   // Asignamos el props IdLeccion a la propiedad IdLeccion del objeto form
-  form.IdLeccion = props.IdLeccion;
+  formulario.append("IdLeccion", props.IdLeccion);
   // Definicion de las propiedades que se enviaran en la solicitud a la API
   formulario.append("Contenido", form.Contenido);
   // Validando si el recurso es una url o un archivo local.
@@ -83,7 +88,7 @@ const guardarSeccion = async () => {
     : "";
   // Validamos si una seccion esta creandose o editandose
   if (form.IdSeccion != null) {
-    //Actualizar
+    //Actualizar seccion
     api.post("/secciones/update/" + form.IdSeccion, formulario, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -91,53 +96,34 @@ const guardarSeccion = async () => {
       },
     });
   } else {
-    //Guardar
-    api
-      .post("/secciones/create", formulario, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-      .then((response) => {
-        Alert.fire({
-          title: "¿Desea agregar secciones?",
-          icon: "question",
-          showCancelButton: true,
-          confirmButtonText:
-            '<i class="fa-solid fa-square-check"></i>Si, agregar',
-          cancelButtonText:
-            '<i class="fa-solid fa-circle-xmark"></i>No agregar',
-        }).then((res) => {
-          if (res.isConfirmed) {
-            console.log(response.data.IdSeccion);
-            forms.reset();
-            closeWindow();
-            emit("refresh");
-          } else {
-            closeWindow();
-            forms.reset();
-            emit("refresh");
-          }
-        });
-      });
+    //Guardar seccion
+    // api
+    //   .post("/secciones/create", formulario, {
+    //     headers: {
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //       "X-Requested-With": "XMLHttpRequest",
+    //     },
+    //   })
+    //   .then((response) => {
+    //     console.log(response.data);
+    //   });
+    enviarSolicitud(
+      "POST",
+      formulario,
+      "/secciones/create",
+      "¡Registro ingresado satisfactoriamente!"
+    );
+    closeWindow();
   }
+  // forms.();
 };
 
-onUpdated(() => {
-  // fechaActual();
-  if (props.seccion) {
-    if (form.IdSeccion != props.seccion.IdLeccion) {
-      form.IdLeccion = props.seccion.IdLeccion;
-      form.Contenido = props.seccion.Contenido;
-    }
-  }
-});
+onUpdated(() => {});
 </script>
 <template>
   <div class="body-contenido">
-    <div class="window-seccion-background" id="window-seccion-background">
-      <div class="window-seccion-container" id="window-seccion-container">
+    <div class="window-background-seccion" id="window-background-seccion">
+      <div class="window-container-seccion" id="window-container-seccion">
         <button class="close-button" id="close-button" @click="closeWindow">
           <i class="fa fa-times icon-x" aria-hidden="true"></i>
         </button>
@@ -235,7 +221,7 @@ onUpdated(() => {
   margin: 100px 0 0 0;
 }
 
-.window-seccion-background {
+.window-background-seccion {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -250,7 +236,7 @@ onUpdated(() => {
   overflow: hidden;
 }
 
-.window-seccion-container {
+.window-container-seccion {
   position: relative;
   background-color: #fff;
   width: 600px;

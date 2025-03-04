@@ -49,7 +49,7 @@ function Confirmar(uri, id, titulo, mensaje, redict) {
     });
 }
 
-function enviarSolicitud(metodo, parametros = {}, url, mensaje, redict) {
+function enviarSolicitud(metodo, parametros = {}, url, mensaje, redict = "") {
   api({
     method: metodo,
     url: url,
@@ -60,7 +60,7 @@ function enviarSolicitud(metodo, parametros = {}, url, mensaje, redict) {
       if (estado == 200 || estado == 201) {
         mostrarAlerta(mensaje, "success");
         setTimeout(function () {
-          router.push(redict);
+          if (!redict == "") router.push(redict);
         }, 1000);
       }
     })

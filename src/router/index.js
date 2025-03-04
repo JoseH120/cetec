@@ -102,6 +102,12 @@ const router = createRouter({
       name: "SolicitudSave",
       component: () => import("../views/solicitudes/SolicitudSave.vue"),
     },
+    // SECCIONES LISTAR
+    {
+      path: "/listar_secciones/:idLeccion/:temaLeccion",
+      name: "SeccionesListar",
+      component: () => import("../views/secciones/SeccionListar.vue"),
+    },
   ],
 });
 

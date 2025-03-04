@@ -4,13 +4,12 @@ import ActividadSave from "../actividades/ActividadSave.vue";
 import TareasSave from "../tareas/TareasSave.vue";
 import LeccionSave from "../leccion/LeccionSave.vue";
 import SeccionItem from "../secciones/SeccionItem.vue";
-import SeccionSave from "../secciones/SeccionSave.vue";
 
 import { useRoute } from "vue-router";
 import { api } from "@/pluggins/axios";
 import { reactive, ref } from "vue";
 import Swal from "sweetalert2";
-import { mostrarAlerta } from "@/funciones/funciones";
+import { mostrarAlerta, enviarSolicitud } from "@/funciones/funciones";
 import router from "@/router";
 
 const route = useRoute();
@@ -22,8 +21,6 @@ const Lecciones = ref(null);
 const idactividad = ref(0);
 const Actividad = ref(null);
 const Leccion = ref(null);
-const Seccion = ref(null);
-
 const Vista = ref("ACTIVIDADES");
 
 const curso = reactive({
@@ -62,7 +59,9 @@ const getLecciones = async () => {
 
 const openModal = (item = null) => {
   if (Vista.value == "LECCIONES") {
-    // alert('Creare leccion');
+    if (item) {
+      Leccion.value = item;
+    }
     const windowBackgroundLeccion = document.getElementById(
       "window-leccion-background"
     );
@@ -73,10 +72,6 @@ const openModal = (item = null) => {
     }
     const windowBackground = document.getElementById("window-background");
     windowBackground.style.display = "flex";
-  } else if (Vista.value == "SECCIONES") {
-    if (item) {
-      Seccion.value = item;
-    }
   }
 };
 
@@ -113,6 +108,17 @@ const refresh = () => {
   getCurso(idCurso.value);
   getActividades();
   getLecciones();
+};
+
+// Arroja error al querer eliminar una seccion
+const eliminarLeccion = (idLeccion) => {
+  enviarSolicitud(
+    "DELETE",
+    {},
+    `/lecciones/delete/${idLeccion}`,
+    `¿Desea eliminar esta leccion?`,
+    `/curso/${idCurso}`
+  );
 };
 
 const openModalTarea = async (id) => {
@@ -187,8 +193,6 @@ refresh();
     />
 
     <LeccionSave :idCurso="idCurso" :leccion="Leccion" @refresh="refresh" />
-
-    <SeccionSave :idLeccion="0" />
 
     <TareasSave :idActividad="idactividad" />
 
@@ -287,8 +291,24 @@ refresh();
         <h3 v-text="lec.Tema"></h3>
         <p v-text="lec.Descripcion"></p>
         <a :href="lec.Url">enlace</a>
-
-        <SeccionItem :IdLeccion="lec.IdLeccion"></SeccionItem>
+        <div v-if="TipoUsuario != 'ESTUDIANTE'" class="acciones">
+          <button
+            class="btn btn-danger"
+            @click="eliminarLeccion(lec.IdLeccion)"
+          >
+            <i class="fa fa-trash"></i>
+          </button>
+          <button class="btn btn-info float-right" @click="openModal(lec)">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </button>
+          <RouterLink
+            class="btn btn-light float-right"
+            :to="'/listar_secciones/' + lec.IdLeccion + '/' + lec.Tema"
+          >
+            <i class="fa fa-plus"></i>Secciones
+          </RouterLink>
+        </div>
+        <SeccionItem :IdLeccion="lec.IdLeccion" :editable="false"></SeccionItem>
       </section>
     </div>
   </div>

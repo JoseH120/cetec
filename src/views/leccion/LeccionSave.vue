@@ -9,10 +9,10 @@ const AgregarSeccionesSWAL = Swal.mixin({
     confirmButton: "btn btn-success me-3",
     cancelButton: "btn btn-danger",
   },
-}); 
+});
 // variable reactiva para cambiar el tipo de recurso a indexar a la leccion.
 const recurso = reactive({
-  tipo: '',
+  tipo: "",
   activar: false,
 });
 
@@ -21,7 +21,7 @@ const form = reactive({
   IdLeccion: null,
   Tema: "",
   Descripcion: "",
-  Url : "",
+  Url: "",
   FechaPublicacion: "",
   IdCurso: null,
 });
@@ -39,7 +39,6 @@ const cargarArchivo = (e) => {
   } else {
     file.value = null;
   }
-  
 };
 
 window.addEventListener("click", (e) => {
@@ -52,7 +51,6 @@ const closeWindow = () => {
   const windowBackground = document.getElementById("window-leccion-background");
 
   windowContainer.classList.add("close-form");
-
 
   setTimeout(() => {
     windowContainer.classList.remove("close-form");
@@ -70,85 +68,96 @@ const guardarLeccion = async () => {
   formulario.append("Descripcion", form.Descripcion);
 
   // Validando si es url o archivo local.
-  recurso.activar ? 
-    recurso.tipo == 'enlace' ? formulario.append('Url', form.Url) : 
-      recurso.tipo == 'archivo' ? formulario.append('Url',file.value) 
-    :  '' 
-  : '';
+  recurso.activar
+    ? recurso.tipo == "enlace"
+      ? formulario.append("Url", form.Url)
+      : recurso.tipo == "archivo"
+      ? formulario.append("Url", file.value)
+      : ""
+    : "";
   formulario.append("FechaPublicacion", form.FechaPublicacion);
   formulario.append("IdCurso", form.IdCurso);
 
-  if(form.IdLeccion != null){
+  if (form.IdLeccion != null) {
     //Actualizar
-    const respuesta = await api.post("/lecciones/update/"+form.IdLeccion, formulario, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "X-Requested-With": "XMLHttpRequest",
-    },
-  });
-  }
-  else{
+    const respuesta = await api.post(
+      "/lecciones/update/" + form.IdLeccion,
+      formulario,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      }
+    );
+  } else {
     //Guardar
-    const respuesta = await api.post("/lecciones/create", formulario, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }).then((response)=>{
-      AgregarSeccionesSWAL.fire({
-        title: '¿Desea agregar secciones?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: '<i class="fa-solid fa-square-check"></i>Si, agregar',
-      cancelButtonText: '<i class="fa-solid fa-circle-xmark"></i>No agregar',
-      }).then((res)=>{
-        if (res.isConfirmed){
-          forms.reset();
-          closeWindow();
-          emit("refresh",response.data.IdLeccion);
-        }else{
-          closeWindow();
-          forms.reset();
-          emit("refresh");
-        }
-      });  
-    });
+    const respuesta = await api
+      .post("/lecciones/create", formulario, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+      .then((response) => {
+        AgregarSeccionesSWAL.fire({
+          title: "¿Desea agregar secciones?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText:
+            '<i class="fa-solid fa-square-check"></i>Si, agregar',
+          cancelButtonText:
+            '<i class="fa-solid fa-circle-xmark"></i>No agregar',
+        }).then((res) => {
+          if (res.isConfirmed) {
+            forms.reset();
+            closeWindow();
+            emit("refresh", response.data.IdLeccion);
+          } else {
+            closeWindow();
+            forms.reset();
+            emit("refresh");
+          }
+        });
+      });
   }
 
-  
   // forms.reset();
   // closeWindow();
   // emit("refresh");
-
-  
 };
 
-onMounted ( ()=> {
+onMounted(() => {
   fechaActual();
-})
+});
 
-onUpdated(()=>{
+onUpdated(() => {
   // fechaActual();
-  if(props.leccion){
-    if(form.IdLeccion != props.actividad.IdLeccion){
-      form.IdLeccion = props.actividad.IdLeccion; 
-      form.Tema = props.actividad.Tema;
-      form.Descripcion = props.actividad.Descripcion;
+  if (props.leccion) {
+    if (form.IdLeccion != props.leccion.IdLeccion) {
+      form.IdLeccion = props.leccion.IdLeccion;
+      form.Tema = props.leccion.Tema;
+      form.Descripcion = props.leccion.Descripcion;
       form.IdCurso = props.idCurso;
       // form.FechaPublicacion = props.FechaPublicacion;
     }
   }
 });
 
-const fechaActual =  () => {
-  var hoy = new Date()
-var fecha = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + hoy.getDate()).slice(-2) ;
-var hora = ('0' + hoy.getHours()).slice(-2) + ':' + ('0' + hoy.getMinutes()).slice(-2);
+const fechaActual = () => {
+  var hoy = new Date();
+  var fecha =
+    hoy.getFullYear() +
+    "-" +
+    ("0" + (hoy.getMonth() + 1)).slice(-2) +
+    "-" +
+    ("0" + hoy.getDate()).slice(-2);
+  var hora =
+    ("0" + hoy.getHours()).slice(-2) + ":" + ("0" + hoy.getMinutes()).slice(-2);
 
-var fecha_hora = fecha +'T'+ hora;
-document.getElementById('FechaPublicacion').value = fecha_hora;
-}
-
+  var fecha_hora = fecha + "T" + hora;
+  document.getElementById("FechaPublicacion").value = fecha_hora;
+};
 </script>
 <template>
   <div class="body-contenido">
@@ -210,16 +219,20 @@ document.getElementById('FechaPublicacion').value = fecha_hora;
 
           <div class="form-group row mt-2">
             <label for="" class="col-sm-2 col-form-label"
-              >Recurso: 
-              <input type="checkbox" v-model="recurso.validar"> {{ recurso.validar ? 'Si' : 'No' }}
+              >Recurso: <input type="checkbox" v-model="recurso.validar" />
+              {{ recurso.validar ? "Si" : "No" }}
             </label>
 
-            <div class="col-sm-10" >
-              <select class="form-control" v-model="recurso.tipo" :disabled="!recurso.validar">
+            <div class="col-sm-10">
+              <select
+                class="form-control"
+                v-model="recurso.tipo"
+                :disabled="!recurso.validar"
+              >
                 <option value="enlace" selected>Enlace</option>
                 <option value="archivo">Archivo</option>
               </select>
-              <input 
+              <input
                 v-if="recurso.tipo == 'archivo'"
                 type="file"
                 class="form-control"
@@ -227,14 +240,14 @@ document.getElementById('FechaPublicacion').value = fecha_hora;
                 id="UrlRecurso"
                 :disabled="!recurso.validar"
               />
-              <input v-else
+              <input
+                v-else
                 class="form-control"
                 type="text"
                 id="Url"
                 placeholder="pegar enlace"
                 :disabled="!recurso.validar"
-              >
-
+              />
             </div>
           </div>
 
