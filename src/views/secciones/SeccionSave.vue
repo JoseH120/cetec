@@ -78,13 +78,16 @@ const guardarSeccion = async () => {
   formulario.append("IdLeccion", props.IdLeccion);
   // Definicion de las propiedades que se enviaran en la solicitud a la API
   formulario.append("Contenido", form.Contenido);
+  if (recurso.tipo != '') {
+    formulario.append('TipoTecurso', recurso.tipo);
+  }
   // Validando si el recurso es una url o un archivo local.
   recurso.activar
     ? recurso.tipo == "enlace"
       ? formulario.append("Url", form.Url)
       : recurso.tipo == "archivo"
-      ? formulario.append("Url", file.value)
-      : ""
+        ? formulario.append("Url", file.value)
+        : ""
     : "";
   // Validamos si una seccion esta creandose o editandose
   if (form.IdSeccion != null) {
@@ -118,7 +121,7 @@ const guardarSeccion = async () => {
   // forms.();
 };
 
-onUpdated(() => {});
+onUpdated(() => { });
 </script>
 <template>
   <div class="body-contenido">
@@ -128,73 +131,38 @@ onUpdated(() => {});
           <i class="fa fa-times icon-x" aria-hidden="true"></i>
         </button>
         <h2>Leccion</h2>
-        <form
-          id="Formulario"
-          @submit.prevent="guardarSeccion()"
-          enctype="multipart/form-data"
-        >
+        <form id="Formulario" @submit.prevent="guardarSeccion()" enctype="multipart/form-data">
           <div class="form-group row mt-2">
-            <label for="IdSeccion" class="col-sm-2 col-form-label" hidden
-              >ID:
+            <label for="IdSeccion" class="col-sm-2 col-form-label" hidden>ID:
             </label>
             <div class="col-sm-10">
-              <input
-                type="number"
-                class="form-control"
-                id="IdLeccion"
-                v-model="form.IdSeccion"
-                hidden
-                disabled
-              />
+              <input type="number" class="form-control" id="IdLeccion" v-model="form.IdSeccion" hidden disabled />
             </div>
           </div>
 
           <div class="form-group row mt-2">
-            <label for="Contenido" class="col-sm-2 col-form-label"
-              >Contenido:
+            <label for="Contenido" class="col-sm-2 col-form-label">Contenido:
             </label>
             <div class="col-sm-10">
-              <textarea
-                id="Contenido"
-                class="form-control"
-                v-model="form.Contenido"
-                required
-              >
+              <textarea id="Contenido" class="form-control" v-model="form.Contenido" required>
               </textarea>
             </div>
           </div>
 
           <div class="form-group row mt-2">
-            <label for="" class="col-sm-2 col-form-label"
-              >Recurso: <input type="checkbox" v-model="recurso.validar" />
+            <label for="" class="col-sm-2 col-form-label">Recurso: <input type="checkbox" v-model="recurso.validar" />
               {{ recurso.validar ? "Si" : "No" }}
             </label>
 
             <div class="col-sm-10">
-              <select
-                class="form-control"
-                v-model="recurso.tipo"
-                :disabled="!recurso.validar"
-              >
+              <select class="form-control" v-model="recurso.tipo" :disabled="!recurso.validar">
                 <option value="enlace" selected>Enlace</option>
                 <option value="archivo">Archivo</option>
               </select>
-              <input
-                v-if="recurso.tipo == 'archivo'"
-                type="file"
-                class="form-control"
-                @change="cargarArchivo"
-                id="UrlRecurso"
-                :disabled="!recurso.validar"
-              />
-              <input
-                v-else
-                class="form-control"
-                type="text"
-                id="Url"
-                placeholder="pegar enlace"
-                :disabled="!recurso.validar"
-              />
+              <input v-if="recurso.tipo == 'archivo'" type="file" class="form-control" @change="cargarArchivo"
+                id="UrlRecurso" :disabled="!recurso.validar" />
+              <input v-else class="form-control" type="text" id="Url" placeholder="pegar enlace"
+                :disabled="!recurso.validar" />
             </div>
           </div>
 

@@ -3,16 +3,9 @@ import { onMounted, onUpdated, reactive, ref } from "vue";
 import { api } from "@/pluggins/axios";
 import Swal from "sweetalert2";
 
-// Constante que sostendra el sweataert
-const AgregarSeccionesSWAL = Swal.mixin({
-  customClass: {
-    confirmButton: "btn btn-success me-3",
-    cancelButton: "btn btn-danger",
-  },
-});
 // variable reactiva para cambiar el tipo de recurso a indexar a la leccion.
 const recurso = reactive({
-  tipo: "",
+  tipo: "enlace",
   activar: false,
 });
 
@@ -72,8 +65,8 @@ const guardarLeccion = async () => {
     ? recurso.tipo == "enlace"
       ? formulario.append("Url", form.Url)
       : recurso.tipo == "archivo"
-      ? formulario.append("Url", file.value)
-      : ""
+        ? formulario.append("Url", file.value)
+        : ""
     : "";
   formulario.append("FechaPublicacion", form.FechaPublicacion);
   formulario.append("IdCurso", form.IdCurso);
@@ -100,25 +93,17 @@ const guardarLeccion = async () => {
         },
       })
       .then((response) => {
-        AgregarSeccionesSWAL.fire({
-          title: "¿Desea agregar secciones?",
-          icon: "question",
-          showCancelButton: true,
-          confirmButtonText:
-            '<i class="fa-solid fa-square-check"></i>Si, agregar',
-          cancelButtonText:
-            '<i class="fa-solid fa-circle-xmark"></i>No agregar',
-        }).then((res) => {
-          if (res.isConfirmed) {
-            forms.reset();
-            closeWindow();
-            emit("refresh", response.data.IdLeccion);
-          } else {
-            closeWindow();
-            forms.reset();
-            emit("refresh");
-          }
-        });
+        if (response.data) {
+          forms.reset();
+          closeWindow();
+          emit("refresh");
+          Swal.fire({ icon: 'success', title: 'Registro insertado', text: 'Leccion creada correctamente' })
+        } else {
+          Swal.fire({ icon: 'error', title: 'Opps...', text: 'Algo ocurrio mal.' })
+          closeWindow();
+          emit("refresh");
+        }
+
       });
   }
 
@@ -167,118 +152,62 @@ const fechaActual = () => {
           <i class="fa fa-times icon-x" aria-hidden="true"></i>
         </button>
         <h2>Leccion</h2>
-        <form
-          id="Formulario"
-          @submit.prevent="guardarLeccion()"
-          enctype="multipart/form-data"
-        >
+        <form id="Formulario" @submit.prevent="guardarLeccion()" enctype="multipart/form-data">
           <div class="form-group row mt-2">
-            <label for="IdLeccion" class="col-sm-2 col-form-label" hidden
-              >ID:
+            <label for="IdLeccion" class="col-sm-2 col-form-label" hidden>ID:
             </label>
             <div class="col-sm-10">
-              <input
-                type="number"
-                class="form-control"
-                id="IdLeccion"
-                v-model="form.IdLeccion"
-                hidden
-                disabled
-              />
+              <input type="number" class="form-control" id="IdLeccion" v-model="form.IdLeccion" hidden disabled />
             </div>
           </div>
 
           <div class="form-group row mt-2">
             <label for="Tema" class="col-sm-2 col-form-label">Tema: </label>
             <div class="col-sm-10">
-              <input
-                type="text"
-                class="form-control"
-                id="Tema"
-                v-model="form.Tema"
-                required
-                autofocus
-              />
+              <input type="text" class="form-control" id="Tema" v-model="form.Tema" required autofocus />
             </div>
           </div>
 
           <div class="form-group row mt-2">
-            <label for="Descripcion" class="col-sm-2 col-form-label"
-              >Descripcion:
+            <label for="Descripcion" class="col-sm-2 col-form-label">Descripcion:
             </label>
             <div class="col-sm-10">
-              <textarea
-                id="Descripcion"
-                class="form-control"
-                v-model="form.Descripcion"
-                required
-              >
+              <textarea id="Descripcion" class="form-control" v-model="form.Descripcion" required>
               </textarea>
             </div>
           </div>
 
           <div class="form-group row mt-2">
-            <label for="" class="col-sm-2 col-form-label"
-              >Recurso: <input type="checkbox" v-model="recurso.validar" />
+            <label for="" class="col-sm-2 col-form-label">Recurso: <input type="checkbox" v-model="recurso.validar" />
               {{ recurso.validar ? "Si" : "No" }}
             </label>
 
-            <div class="col-sm-10">
-              <select
-                class="form-control"
-                v-model="recurso.tipo"
-                :disabled="!recurso.validar"
-              >
+            <div class="col-sm-10" v-show="recurso.validar">
+              <select class="form-control" v-model="recurso.tipo" :disabled="!recurso.validar">
                 <option value="enlace" selected>Enlace</option>
                 <option value="archivo">Archivo</option>
               </select>
-              <input
-                v-if="recurso.tipo == 'archivo'"
-                type="file"
-                class="form-control"
-                @change="cargarArchivo"
-                id="UrlRecurso"
-                :disabled="!recurso.validar"
-              />
-              <input
-                v-else
-                class="form-control"
-                type="text"
-                id="Url"
-                placeholder="pegar enlace"
-                :disabled="!recurso.validar"
-              />
+              <input v-if="recurso.tipo == 'archivo'" type="file" class="form-control" @change="cargarArchivo"
+                id="UrlRecurso" :disabled="!recurso.validar" />
+              <input v-else class="form-control" type="text" id="Url" placeholder="pegar enlace"
+                :disabled="!recurso.validar" />
             </div>
           </div>
 
           <div class="form-group row mt-2">
-            <label for="IdCurso" class="col-sm-2 col-form-label" hidden
-              >ID Curso:
+            <label for="IdCurso" class="col-sm-2 col-form-label" hidden>ID Curso:
             </label>
             <div class="col-sm-10">
-              <input
-                type="number"
-                class="form-control"
-                id="IdCurso"
-                v-model="form.IdCurso"
-                value="{{props.idCurso}}"
-                hidden
-                disabled
-              />
+              <input type="number" class="form-control" id="IdCurso" v-model="form.IdCurso" value="{{props.idCurso}}"
+                hidden disabled />
             </div>
           </div>
 
           <div class="form-group row mt-2">
-            <label for="FechaPublicacion" class="col-sm-2 col-form-label"
-              >Fecha publicación:
+            <label for="FechaPublicacion" class="col-sm-2 col-form-label">Fecha publicación:
             </label>
             <div class="col-sm-10">
-              <input
-                type="datetime-local"
-                class="form-control"
-                id="FechaPublicacion"
-                v-model="form.FechaPublicacion"
-              />
+              <input type="datetime-local" class="form-control" id="FechaPublicacion" v-model="form.FechaPublicacion" />
             </div>
           </div>
 
