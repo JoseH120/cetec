@@ -1,20 +1,43 @@
 <script setup>
-import {ref, reactive} from 'vue';
+import {ref, reactive, onMounted} from 'vue';
 import { mostrarAlerta } from "@/funciones/funciones";
 import { api } from "@/pluggins/axios";
 import Swal from "sweetalert2";
 
 
     let Tema = ref("Mis tramites");
+    const tipo = localStorage.getItem("tipo");
+    let flag = ref(false);
+    const idTutor = ref(0);
 
     const estado = reactive({
         solicitudes: {},
         cargando: false,
     }); 
     
+
+    const getIdTutor = async () => {
+        const id = localStorage.getItem("idusuario");
+        const respuesta = api.get(`/tutores/getTutor/${Number(id)}`);
+        const IdTutor = (await respuesta).data.idtutor;
+        idTutor.value = IdTutor;
+    }
+    
+    
     const getSolicitudes = async () => {
+        getIdTutor();
+        let url = "";
+        if(tipo == "TUTOR"){
+            url = "/solicitudes/"+idTutor.value;
+        }
+        else if(tipo == "ADMINISTRADOR"){
+            url = "/solicitudes";
+        }
+        else{
+            url = "/solicitudes";
+        }
         try {
-            const respuesta = api.get("/solicitudes");
+            const respuesta = api.get(url);
             estado.solicitudes = (await respuesta).data;
             estado.cargando = false;
         } catch (error) {
@@ -51,13 +74,27 @@ import Swal from "sweetalert2";
         }
     });
 };
+
+    onMounted(()=>{
+        if(tipo == "ADMINISTRADOR"){
+            flag.value = true;
+        }
+        else if(tipo == "TUTOR"){
+            flag.value = false;
+        }
+        else{
+            flag.value = false;
+        }
+    });
+
     getSolicitudes();
 
 </script>
 <template>
 <h2>{{ Tema }}</h2>
 <div class="container">
-    <Router-link class="btn btn-success color-with m-1" to="/guardar_solicitud">
+    <Router-link v-if="!flag"
+    class="btn btn-success color-with m-1" to="/guardar_solicitud">
       <i class="fa-solid fa-plus"></i> Agregar
     </Router-link>
 
@@ -90,15 +127,16 @@ import Swal from "sweetalert2";
                         <td v-text="soli.IdTutor"></td>
                         <td>
                             <RouterLink
-                            :to="{ path: 'guardar_solicitud/' + soli.IdSolicitud + '/1' }"
+                            :to="{ path: '/guardar_solicitud/' + soli.IdSolicitud + '/1' }"
                             class="btn btn-info m-1"
                             >
                                 <i class="fa-solid fa-eye"></i>
                             </RouterLink>
 
                             <RouterLink
-                            :to="{ path: 'guardar_solicitud/' + soli.IdSolicitud + '/2' }"
+                            :to="{ path: '/guardar_solicitud/' + soli.IdSolicitud + '/2' }"
                             class="btn btn-warning m-1"
+                            v-if="flag"
                             >
                                 <i class="fa-solid fa-edit"></i>
                             </RouterLink>

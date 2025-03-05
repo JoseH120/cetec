@@ -29,6 +29,7 @@
           <Navlink path="/listar_tutores" text="Tutores" />
           <Navlink path="/listar_estudiantes" text="Estudiantes" />
           <Navlink path="/listar_cursos" text="Cursos" />
+          <Navlink path="/listar_solicitudes/" text="Tramites"/>
           <Navlink path="/about" text="About" />
         </ul>
         <!-- NAV PARA TUTORES -->
@@ -76,11 +77,10 @@
               <li>
                 <hr class="dropdown-divider" />
               </li>
-              <li>
+              <li @click="logout()">
                 <a
                   href="#"
                   class="dropdown-item fas fa-sign-out-alt fa-fw"
-                  @click="logout()"
                 ></a
                 >Log Out
               </li>

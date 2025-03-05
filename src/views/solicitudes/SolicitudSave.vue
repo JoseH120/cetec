@@ -8,20 +8,24 @@ import { enviarSolicitud } from "@/funciones/funciones";
     const idSolicitud = route.params.id;
     const opcion = route.params.case;
     let activo = ref(null);
+    let fl = ref(null);
 
     const form = reactive({
-        idSolicitud: 0,
+        IdSolicitud: 0,
         NombreCurso: "",
         Comentario: "",
         Estado: "",
-        IdTutor: null,
+        IdTutor: 0,
     });
 
     onMounted(() => {
+        const tipo = localStorage.getItem("tipo");
         switch (Number(opcion)) {
             case 0:
                 //Insertar
                 activo.value = false;
+                fl = true;
+                form.Estado = "SOLICITADO";
             break;
             case 1:
                 //Ver
@@ -30,8 +34,19 @@ import { enviarSolicitud } from "@/funciones/funciones";
             break;
             case 2:
                 //editar
-                activo.value = false;
+                
                 getSolicitud(idSolicitud);
+                if(tipo == "TUTOR"){
+                    activo.value = false;
+                    fl = true;
+                }
+                else if(tipo == "ADMINISTRADOR"){
+                    fl = false;
+                }
+                else{
+                    activo.value = false;
+                    fl = true;
+                }
             break;
             default:
                 activo.value = false;
@@ -40,13 +55,13 @@ import { enviarSolicitud } from "@/funciones/funciones";
     });
 
     const getSolicitud = async (id) => {
-        const respuesta = api.get(`/solicitud/edit/${Number(id)}`);
+        const respuesta = api.get(`/solicitudes/edit/${Number(id)}`);
         const solicitud = (await respuesta).data;
         form.IdSolicitud = solicitud.IdSolicitud;
         form.NombreCurso = solicitud.NombreCurso;
         form.Comentario = solicitud.Comentario;
-        form.Estado = curso.Estado;
-        form.IdTutor = curso.IdTutor;
+        form.Estado = solicitud.Estado;
+        form.IdTutor = solicitud.IdTutor;
     };
 
     const guardarSolicitud = () => {
@@ -54,7 +69,7 @@ import { enviarSolicitud } from "@/funciones/funciones";
             enviarSolicitud(
             "POST",
             form,
-            "/solicitud/create",
+            "/solicitudes/create",
             "Registro guardado exitosamente",
             "/listar_solicitudes");
         } else if (opcion == 2) {
@@ -75,8 +90,13 @@ import { enviarSolicitud } from "@/funciones/funciones";
         form.IdTutor = null;
     };
 
-
-
+    const getIdTutor = async () => {
+        const id = localStorage.getItem("idusuario");
+        const respuesta = api.get(`/tutores/getTutor/${Number(id)}`);
+        const IdTutor = (await respuesta).data.idtutor;
+        form.IdTutor = IdTutor;
+    }
+    getIdTutor();
 </script>
 <template>
 <h2>Guardar solicitud</h2>
@@ -88,7 +108,7 @@ import { enviarSolicitud } from "@/funciones/funciones";
             id="txtIdSolicitud"
             class="form-control"
             disabled
-            v-model="form.IdCurso"
+            v-model="form.IdSolicitud"
         />
 
         <label for="txtNombre" class="form-label">Nombre del curso: </label>
@@ -99,7 +119,8 @@ import { enviarSolicitud } from "@/funciones/funciones";
             placeholder="Escribir . . ."
             class="form-control"
             v-model="form.NombreCurso"
-            :disabled="activo"
+            :disabled="activo || !fl"
+            required
         />
 
         <label for="taComentario" class="form-label"> Comentario:
@@ -112,12 +133,12 @@ import { enviarSolicitud } from "@/funciones/funciones";
         placeholder="Escribir . . ."
         class="form-control"
         v-model="form.Comentario"
-        :disabled="activo"
+        :disabled="activo || !fl"
       ></textarea>
 
       <label for="txtEstado" class="form-label">Estado: </label>
-      <select name="" id="txtEstado" class="form-control">
-        <option value="SOLICITADO">SOLICITADO</option>
+      <select name="" id="txtEstado" class="form-control" v-model="form.Estado" :disabled="(activo || fl)">
+        <option value="SOLICITADO" selected>SOLICITADO</option>
         <option value="APROBADO">APROBADO</option>
         <option value="PROCESO">PROCESO</option>
         <option value="DENEGADO">DENEGADO</option>
