@@ -25,6 +25,8 @@ const store = createStore({
       localStorage.removeItem("idusuario");
       localStorage.removeItem("usuario");
       localStorage.removeItem("tipo");
+      localStorage.removeItem("idtutor");
+      localStorage.removeItem("idestudiante");
       router.push({ name: "Signin" });
     },
   },

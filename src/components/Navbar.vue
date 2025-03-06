@@ -29,7 +29,7 @@
           <Navlink path="/listar_tutores" text="Tutores" />
           <Navlink path="/listar_estudiantes" text="Estudiantes" />
           <Navlink path="/listar_cursos" text="Cursos" />
-          <Navlink path="/listar_solicitudes/" text="Tramites"/>
+          <Navlink path="/listar_solicitudes/" text="Tramites" />
           <Navlink path="/about" text="About" />
         </ul>
         <!-- NAV PARA TUTORES -->
@@ -39,7 +39,7 @@
         >
           <Navlink path="/" text="home" />
           <Navlink :path="`/my/index/${user.id}`" text="Principal" />
-          <Navlink path="/listar_solicitudes/" text="Mis Tramites"/>
+          <Navlink path="/listar_solicitudes/" text="Mis Tramites" />
           <Navlink path="/about" text="About" />
         </ul>
         <!-- NAV PARA TUTORES -->
@@ -78,10 +78,7 @@
                 <hr class="dropdown-divider" />
               </li>
               <li @click="logout()">
-                <a
-                  href="#"
-                  class="dropdown-item fas fa-sign-out-alt fa-fw"
-                ></a
+                <a href="#" class="dropdown-item fas fa-sign-out-alt fa-fw"></a
                 >Log Out
               </li>
             </ul>
@@ -121,23 +118,9 @@ const userInfo = () => {
     if (user.tipo != "ESTUDIANTE" && user.tipo != "TUTOR") {
       user.id == 0;
     } else if (user.tipo == "ESTUDIANTE") {
-      api
-        .get(`/estudiantes/getEstudiante/${user.idusuario}`)
-        .then((res) => {
-          user.id = res.data.idestudiante;
-        })
-        .catch(() => {
-          user.id = null;
-        });
+      user.id = localStorage.getItem("idestudiante");
     } else if (user.tipo == "TUTOR") {
-      api
-        .get(`/tutores/getTutor/${user.idusuario}`)
-        .then((res) => {
-          user.id = res.data.idtutor;
-        })
-        .catch(() => {
-          user.id = null;
-        });
+      user.id = localStorage.getItem("idtutor");
     }
   } else {
     user.idusuario = null;
@@ -167,5 +150,4 @@ userInfo();
   border-top: 0;
   border-bottom: 0.3em solid;
 }
-
 </style>

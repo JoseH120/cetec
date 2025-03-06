@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
               <label for="clave">Contraseña</label>
-                <input
+              <input
                 type="password"
                 name="clave"
                 id="clave"
@@ -39,7 +39,9 @@
 
             <div class="row">
               <div class="col-12 col-sm-8">
-                <button type="submit" class="btn btn-primary">Iniciar sesion</button>
+                <button type="submit" class="btn btn-primary">
+                  Iniciar sesion
+                </button>
               </div>
             </div>
           </form>
@@ -91,6 +93,11 @@ const signin = () => {
       localStorage.setItem("idusuario", res.data.idusuario);
       localStorage.setItem("usuario", res.data.usuario);
       localStorage.setItem("tipo", res.data.tipo);
+      if (res.data.tipo == "TUTOR") {
+        localStorage.setItem("idtutor", res.data.idtutor);
+      } else if (res.data.tipo == "ESTUDIANTE") {
+        localStorage.setItem("idestudiante", res.data.idestudiante);
+      }
       store.dispatch("login", expiresMs);
     })
     .catch((err) => {
