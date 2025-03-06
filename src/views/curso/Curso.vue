@@ -3,8 +3,7 @@ import SideBar from "../components/SideBar.vue";
 import ActividadSave from "../actividades/ActividadSave.vue";
 import TareasSave from "../tareas/TareasSave.vue";
 import LeccionSave from "../leccion/LeccionSave.vue";
-import SeccionItem from "../secciones/SeccionItem.vue";
-
+import SeccionCard from "../secciones/SeccionCard.vue";
 import { useRoute } from "vue-router";
 import { api } from "@/pluggins/axios";
 import { reactive, ref } from "vue";
@@ -308,7 +307,7 @@ refresh();
             <i class="fa fa-plus"></i>Secciones
           </RouterLink>
         </div>
-        <SeccionItem :IdLeccion="lec.IdLeccion" :editable="false"></SeccionItem>
+        <SeccionCard :IdLeccion="lec.IdLeccion"></SeccionCard>
       </section>
     </div>
   </div>
