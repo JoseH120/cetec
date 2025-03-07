@@ -72,7 +72,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <h2 class="text-muted">Tareas recibidas de</h2>
+  <h2 class="text-muted">Tareas recibidas</h2>
   <div class="container">
     <button
       class="btn btn-primary m-2"
