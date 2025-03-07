@@ -55,7 +55,7 @@ const getMyCursos = () => {
   switch (Tipo) {
     case "TUTOR":
       {
-        activo.value = true;
+        activo.value = false;
         api
           .get("/cursos/CursosByTutor/" + id.value)
           .then(async (res) => {
