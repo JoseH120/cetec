@@ -4,7 +4,7 @@ import { mostrarAlerta } from "@/funciones/funciones";
 import { api } from "@/pluggins/axios";
 import Swal from "sweetalert2";
 
-let Tema = ref("Mis tramites");
+let Tema = ref("Mis Solicitudes");
 const tipo = localStorage.getItem("tipo");
 let flag = ref(false);
 const idTutor = ref(0);

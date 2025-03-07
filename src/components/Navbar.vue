@@ -29,7 +29,7 @@
           <Navlink path="/listar_tutores" text="Tutores" />
           <Navlink path="/listar_estudiantes" text="Estudiantes" />
           <Navlink path="/listar_cursos" text="Cursos" />
-          <Navlink path="/listar_solicitudes/" text="Tramites" />
+          <Navlink path="/listar_solicitudes/" text="Solicitudes" />
           <Navlink path="/about" text="About" />
         </ul>
         <!-- NAV PARA TUTORES -->
@@ -39,7 +39,7 @@
         >
           <Navlink path="/" text="home" />
           <Navlink :path="`/my/index/${user.id}`" text="Principal" />
-          <Navlink path="/listar_solicitudes/" text="Mis Tramites" />
+          <Navlink path="/listar_solicitudes/" text="Mis Solicitudes" />
           <Navlink path="/about" text="About" />
         </ul>
         <!-- NAV PARA TUTORES -->
