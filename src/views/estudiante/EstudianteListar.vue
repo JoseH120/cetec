@@ -95,7 +95,7 @@ getEstudiantes();
               <td v-text="stu.FechaNacimiento"></td>
               <td v-text="stu.Responsable"></td>
               <td v-text="stu.Correo"></td>
-              <td v-text="stu.VacunaCovid"></td>
+              <td v-text="(stu.VacunaCovid==1 ? 'SI' : 'NO')"></td>
               <td v-text="stu.IdUsuario"></td>
               <td>
                 <RouterLink
