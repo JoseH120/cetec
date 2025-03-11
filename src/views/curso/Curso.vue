@@ -45,7 +45,7 @@ const getActividades = async () => {
     );
     if ((await respuesta).status != 500)
       Actividades.value = (await respuesta).data;
-  } catch (e) {}
+  } catch (e) { }
 };
 
 const getLecciones = async () => {
@@ -53,7 +53,7 @@ const getLecciones = async () => {
     const respuesta = api.get(`/lecciones/leccionesByCurso/${idCurso.value}`);
     if ((await respuesta).status != 500)
       Lecciones.value = (await respuesta).data;
-  } catch (e) {}
+  } catch (e) { }
 };
 
 const openModal = (item = null) => {
@@ -147,7 +147,7 @@ const openModalTarea = async (id) => {
       const resp = api.get(`/estudiantes/getEstudiante/${Number(IdUsuario)}`);
       idEstudiante = (await resp).data.idestudiante;
     }
-  } catch (e) {}
+  } catch (e) { }
   try {
     if (idEstudiante > 0) {
       const respuesta = api.get(
@@ -197,19 +197,10 @@ refresh();
 
 <template>
   <div class="Container">
-    <SideBar
-      class="box"
-      :lista="Vista == 'ACTIVIDADES' ? Actividades : Lecciones"
-      :idCurso="idCurso"
-      :nombreCurso="curso.NombreCurso"
-      :Vista="Vista"
-    />
+    <SideBar class="box" :lista="Vista == 'ACTIVIDADES' ? Actividades : Lecciones" :idCurso="idCurso"
+      :nombreCurso="curso.NombreCurso" :Vista="Vista" />
 
-    <ActividadSave
-      :idCurso="idCurso"
-      :actividad="Actividad"
-      @refresh="refresh"
-    />
+    <ActividadSave :idCurso="idCurso" :actividad="Actividad" @refresh="refresh" />
 
     <LeccionSave :idCurso="idCurso" :leccion="Leccion" @refresh="refresh" />
 
@@ -220,111 +211,61 @@ refresh();
       <div class="Nav">
         <ul class="Ul">
           <li class="Li">
-            <label
-              :class="Vista == 'ACTIVIDADES' ? 'SelectedVista Label' : 'Label'"
-              @click="cambiarVista('ACTIVIDADES')"
-              >Actividades</label
-            >
+            <label :class="Vista == 'ACTIVIDADES' ? 'SelectedVista Label' : 'Label'"
+              @click="cambiarVista('ACTIVIDADES')">Actividades</label>
           </li>
           <li class="Li">
-            <label
-              :class="Vista == 'LECCIONES' ? 'SelectedVista Label' : 'Label'"
-              @click="cambiarVista('LECCIONES')"
-              >Lecciones</label
-            >
+            <label :class="Vista == 'LECCIONES' ? 'SelectedVista Label' : 'Label'"
+              @click="cambiarVista('LECCIONES')">Lecciones</label>
           </li>
         </ul>
       </div>
       <div>
-        <button
-          v-if="TipoUsuario != 'ESTUDIANTE'"
-          class="open-button mb-2"
-          id="open-button"
-          @click="openModal"
-        >
+        <button v-if="TipoUsuario != 'ESTUDIANTE'" class="open-button mb-2" id="open-button" @click="openModal">
           <i class="fa fa-plus" aria-hidden="true"></i> {{ Vista }}
         </button>
       </div>
 
-      <section
-        v-if="Vista == 'ACTIVIDADES'"
-        v-for="(act, i) in Actividades"
-        :key="act.IdActividad"
-        :id="act.IdActividad"
-        @dblclick="VerTareas(act.IdActividad)"
-        class="cursor"
-      >
-        <h3
-          class="cursor"
-          v-text="act.Tema"
-          @click="VerTareas(act.IdActividad)"
-        ></h3>
+      <section v-if="Vista == 'ACTIVIDADES'" v-for="(act, i) in Actividades" :key="act.IdActividad"
+        :id="act.IdActividad" @dblclick="VerTareas(act.IdActividad)" class="cursor">
+        <h3 class="cursor" v-text="act.Tema" @click="VerTareas(act.IdActividad)"></h3>
         <p v-text="act.Descripcion"></p>
         <a :href="act.UrlRecurso" target="_blank">Archivo</a>
         <div class="acciones">
-          <button
-            v-if="TipoUsuario != 'ESTUDIANTE'"
-            class="btn btn-danger"
-            @click="eliminarActividad(act.Tema, act.IdActividad)"
-          >
+          <button v-if="TipoUsuario != 'ESTUDIANTE'" class="btn btn-danger"
+            @click="eliminarActividad(act.Tema, act.IdActividad)">
             <i class="fa fa-trash"></i>
           </button>
-          <button
-            v-if="TipoUsuario != 'ESTUDIANTE'"
-            class="btn btn-info"
-            @click="openModal(act)"
-          >
+          <button v-if="TipoUsuario != 'ESTUDIANTE'" class="btn btn-info" @click="openModal(act)">
             <i class="fa fa-pencil" aria-hidden="true"></i>
           </button>
-          <button
-            v-if="TipoUsuario != 'TUTOR'"
-            class="btn btn-light"
-            title="Subir tarea"
-            @click="openModalTarea(act.IdActividad)"
-          >
+          <button v-if="TipoUsuario != 'TUTOR'" class="btn btn-light" title="Subir tarea"
+            @click="openModalTarea(act.IdActividad)">
             <i class="fa-solid fa-upload"></i>
           </button>
-          <button
-            v-if="TipoUsuario != 'TUTOR'"
-            class="btn btn-link"
-            title="Ver tarea enviada"
-            @click="verTarea(act.IdActividad)"
-          >
+          <button v-if="TipoUsuario != 'TUTOR'" class="btn btn-link" title="Ver tarea enviada"
+            @click="verTarea(act.IdActividad)">
             <i class="fa-solid fa-eye"></i>
           </button>
-          <button
-            v-if="TipoUsuario != 'ESTUDIANTE'"
-            class="btn btn-light"
-            title="Descargar tareas de los estudiantes"
-          >
+          <button v-if="TipoUsuario != 'ESTUDIANTE'" f class="btn btn-light"
+            title="Descargar tareas de los estudiantes">
             <i class="fa-solid fa-download"></i>
           </button>
         </div>
       </section>
-      <section
-        v-else
-        v-for="(lec, i) in Lecciones"
-        :key="lec.IdLeccion"
-        :id="lec.IdLeccion"
-      >
+      <section v-else v-for="(lec, i) in Lecciones" :key="lec.IdLeccion" :id="lec.IdLeccion">
         <h3 v-text="lec.Tema"></h3>
         <p v-text="lec.Descripcion"></p>
         <a :href="lec.Url" :hidden="(!lec.Url)" target="_blank">enlace</a>
         <div v-if="TipoUsuario != 'ESTUDIANTE'" class="acciones">
-          <button
-            class="btn btn-danger"
-            @click="eliminarLeccion(lec.IdLeccion, lec.Tema
-            )"
-          >
+          <button class="btn btn-danger" @click="eliminarLeccion(lec.IdLeccion, lec.Tema
+          )">
             <i class="fa fa-trash"></i>
           </button>
           <button class="btn btn-info float-right" @click="openModal(lec)">
             <i class="fa fa-pencil" aria-hidden="true"></i>
           </button>
-          <RouterLink
-            class="btn btn-light float-right"
-            :to="'/listar_secciones/' + lec.IdLeccion + '/' + lec.Tema"
-          >
+          <RouterLink class="btn btn-light float-right" :to="'/listar_secciones/' + lec.IdLeccion + '/' + lec.Tema">
             <i class="fa fa-plus"></i>Secciones
           </RouterLink>
         </div>
@@ -379,6 +320,7 @@ section {
   transition: transfom 0.3 cubic-bezier(0.36, 0.37, 0.76, 0.75);
   cursor: pointer;
 }
+
 .open-button:active {
   transform: scale(0.95);
 }
@@ -392,10 +334,12 @@ section {
   width: 100%;
   margin-bottom: 0;
 }
+
 .Ul {
   list-style: none;
   overflow: hidden;
 }
+
 .Li {
   float: left;
   font-size: 20px;

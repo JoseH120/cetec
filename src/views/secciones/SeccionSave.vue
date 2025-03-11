@@ -1,7 +1,6 @@
 <script setup>
 import { onUpdated, reactive, ref } from "vue";
 import { api } from "@/pluggins/axios";
-import { enviarSolicitud } from "@/funciones/funciones";
 import Swal from "sweetalert2";
 
 // Definir una constante que contendran las variables props desde Leccion.
@@ -74,13 +73,13 @@ const guardarSeccion = async () => {
     formulario.append("TipoTecurso", recurso.tipo);
   }
   // Validando si el recurso es una url o un archivo local.
-  recurso.activar
-    ? recurso.tipo == "enlace"
-      ? formulario.append("Url", form.Url)
-      : recurso.tipo == "archivo"
-      ? formulario.append("Url", file.value)
-      : ""
-    : "";
+  if(recurso.tipo == "enlace"){
+    formulario.append("Url", form.Url);
+  }
+  else if(recurso.tipo == "archivo"){
+    formulario.append("file", file.value)
+  }
+
   // Validamos si una seccion esta creandose o editandose
   if (form.IdSeccion != null) {
     //Actualizar seccion
@@ -91,12 +90,6 @@ const guardarSeccion = async () => {
       },
     });
   } else {
-    // enviarSolicitud(
-    //   "POST",
-    //   formulario,
-    //   "/secciones/create",
-    //   "¡Registro ingresado satisfactoriamente!"
-    // );
     const respuesta = await api.post("/secciones/create", formulario, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -194,6 +187,7 @@ onUpdated(() => {
                 class="form-control"
                 type="text"
                 id="Url"
+                v-model="form.Url"
                 placeholder="pegar enlace"
                 :disabled="!recurso.validar"
               />
