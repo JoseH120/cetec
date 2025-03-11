@@ -24,32 +24,26 @@
           v-else-if="loggedIn && user.tipo == 'ADMINISTRADOR'"
           class="navbar-nav me-auto mb-2 mb-lg-0"
         >
-          <Navlink path="/" text="home" />
           <Navlink path="/listar_usuarios" text="Usuarios" />
           <Navlink path="/listar_tutores" text="Tutores" />
           <Navlink path="/listar_estudiantes" text="Estudiantes" />
           <Navlink path="/listar_cursos" text="Cursos" />
           <Navlink path="/listar_solicitudes/" text="Solicitudes" />
-          <Navlink path="/about" text="About" />
         </ul>
         <!-- NAV PARA TUTORES -->
         <ul
           v-else-if="loggedIn && user.tipo == 'TUTOR'"
           class="navbar-nav me-auto mb-2 mb-lg-0"
         >
-          <Navlink path="/" text="home" />
           <Navlink :path="`/my/index/${user.id}`" text="Principal" />
           <Navlink path="/listar_solicitudes/" text="Mis Solicitudes" />
-          <Navlink path="/about" text="About" />
         </ul>
         <!-- NAV PARA TUTORES -->
         <ul
           v-else-if="loggedIn && user.tipo == 'ESTUDIANTE'"
           class="navbar-nav me-auto mb-2 mb-lg-0"
         >
-          <Navlink path="/" text="home" />
           <Navlink :path="`/my/index/${user.id}`" text="Principal" />
-          <Navlink path="/about" text="About" />
         </ul>
         <!-- Agregando nuevo elemento a la derecho -->
         <ul
@@ -67,16 +61,6 @@
               <i class="fas fa-user"></i>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li>
-                <a href="#" class="dropdown-item fas fa-sliders-h fa-fw"></a
-                >Account
-              </li>
-              <li>
-                <a href="" class="dropdown-item fas fa-cog fa-fw"></a>Settings
-              </li>
-              <li>
-                <hr class="dropdown-divider" />
-              </li>
               <li @click="logout()">
                 <a href="#" class="dropdown-item fas fa-sign-out-alt fa-fw"></a
                 >Log Out
@@ -90,8 +74,7 @@
 </template>
 
 <script setup>
-import Navlink from "@/components/Navlink2.vue";
-import { api } from "@/pluggins/axios";
+import Navlink from "@/components/Navlink.vue";
 import store from "@/store/store";
 import { onUpdated, reactive } from "vue";
 
