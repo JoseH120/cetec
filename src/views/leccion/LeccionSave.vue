@@ -190,7 +190,7 @@ const fechaActual = () => {
               <input v-if="recurso.tipo == 'archivo'" type="file" class="form-control" @change="cargarArchivo"
                 id="UrlRecurso" :disabled="!recurso.validar" />
               <input v-else class="form-control" type="text" id="Url" placeholder="pegar enlace"
-                :disabled="!recurso.validar" />
+                :disabled="!recurso.validar" v-model="form.Url"/>
             </div>
           </div>
 
