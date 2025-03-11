@@ -110,14 +110,34 @@ const refresh = () => {
 };
 
 // Arroja error al querer eliminar una seccion
-const eliminarLeccion = (idLeccion) => {
-  enviarSolicitud(
-    "DELETE",
-    {},
-    `/lecciones/delete/${idLeccion}`,
-    `¿Desea eliminar esta leccion?`,
-    `/curso/${idCurso}`
-  );
+const eliminarLeccion = (idLeccion, leccion) => {
+  Swal.fire({
+    title: `¿Desea eliminar la leccion ${leccion}?`,
+    icon: "question",
+    showCancelButton: true,
+    customClass: {
+      confirmButton: "btn btn-success me-3",
+      cancelButton: "btn btn-danger",
+    },
+    confirmButtonText: '<i class="fa-solid fa-square-check"></i>Si, eliminar',
+    cancelButtonText: '<i class="fa-solid fa-circle-xmark"></i>Cancelar',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      api
+        .delete(`/lecciones/delete/${idLeccion}`)
+        .then(() => {
+          getLecciones();
+          mostrarAlerta("Registro eliminado", "success");
+        })
+        .catch(() => {
+          mostrarAlerta("Error al elimar", "error");
+        });
+    } else if (result.isDismissed) {
+      mostrarAlerta("Accion cancelada", "warning");
+    }
+  });
+
+
 };
 
 const openModalTarea = async (id) => {
@@ -289,11 +309,12 @@ refresh();
       >
         <h3 v-text="lec.Tema"></h3>
         <p v-text="lec.Descripcion"></p>
-        <a :href="lec.Url">enlace</a>
+        <a :href="lec.Url" :hidden="(!lec.Url)" target="_blank">enlace</a>
         <div v-if="TipoUsuario != 'ESTUDIANTE'" class="acciones">
           <button
             class="btn btn-danger"
-            @click="eliminarLeccion(lec.IdLeccion)"
+            @click="eliminarLeccion(lec.IdLeccion, lec.Tema
+            )"
           >
             <i class="fa fa-trash"></i>
           </button>

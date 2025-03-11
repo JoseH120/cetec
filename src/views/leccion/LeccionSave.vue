@@ -61,13 +61,13 @@ const guardarLeccion = async () => {
   formulario.append("Descripcion", form.Descripcion);
 
   // Validando si es url o archivo local.
-  recurso.activar
-    ? recurso.tipo == "enlace"
-      ? formulario.append("Url", form.Url)
-      : recurso.tipo == "archivo"
-        ? formulario.append("Url", file.value)
-        : ""
-    : "";
+  if(recurso.tipo == "enlace"){
+    formulario.append("Url", form.Url);
+  }
+  else if(recurso.tipo == "archivo"){
+    formulario.append("file", file.value)
+  }
+
   formulario.append("FechaPublicacion", form.FechaPublicacion);
   formulario.append("IdCurso", form.IdCurso);
 
