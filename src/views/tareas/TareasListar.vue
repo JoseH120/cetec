@@ -21,7 +21,6 @@ const getListarTareas = async () => {
 
 const Modo = () => {
   activo.value = !activo.value;
-  console.log(Tareas.value[1]["Nombre"]);
 };
 
 const calificar = async (id) => {
@@ -46,6 +45,9 @@ const calificar = async (id) => {
 };
 
 const downloadAll = () => {
+  if(Tareas.value.length == 0){
+    mostrarAlerta("No hay tareas por descargar", "info");
+  }
   for (let i = 0; i < Tareas.value.length; i++) {
     const url = Tareas.value[i]["UrlTarea"];
 
@@ -62,7 +64,7 @@ const downloadAll = () => {
         window.URL.revokeObjectURL(url);
       })
       .catch(() => {
-        alert("error");
+        console.log("Error");
       });
   }
 };
