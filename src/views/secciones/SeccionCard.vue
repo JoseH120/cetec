@@ -30,14 +30,14 @@ seccionesByLeccion();
 <template v-if="hasSeccion" class="container">
   <section
     v-for="(seccion, i) in estado.secciones"
-    class="row p-3 p rounded-pill"
+    class="row mx-3 p-3 p rounded-pill"
   >
     <div class="col-md-10 col-sm-12 col-10">
       <p>
         {{ seccion.Contenido }}
-        <button v-if="seccion.Url" @:click="seccion.Url" class="btn btn-link">
+        <a v-if="seccion.Url" :href="seccion.Url" target="_blank" class="btn btn-link">
           Dar click!
-        </button>
+        </a>
       </p>
     </div>
   </section>
