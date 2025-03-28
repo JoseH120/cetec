@@ -78,7 +78,7 @@ const signin = () => {
   axiosInstance
     .post("/login", form, { auth })
     .then((res) => {
-      state.msg = "You have been succesfully logged in";
+      state.msg = "Inicio de sesión exitosa";
       state.classAlert = "success";
       state.email = "";
       state.clave = "";
@@ -102,7 +102,8 @@ const signin = () => {
     })
     .catch((err) => {
       console.log(err.response);
-      state.msg = err.response.data.error_description;
+      // state.msg = err.response.data.error_description;
+      state.msg = "¡Credenciales incorrectas!";
       state.classAlert = "danger";
     });
 };
