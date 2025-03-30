@@ -54,7 +54,9 @@ th {
                   <i class="fa-solid fa-trash-can"></i>
                 </button>
                 <RouterLink
-                  :to="{ path: 'matricula/' + cur.IdCurso }"
+                  :to="{
+                    path: 'matricula/' + cur.IdCurso + '/' + cur.NombreCurso,
+                  }"
                   class="btn btn-ligth m-1"
                 >
                   <i class="fa fa-user-plus" aria-hidden="true"></i>

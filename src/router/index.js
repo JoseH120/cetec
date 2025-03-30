@@ -63,7 +63,7 @@ const router = createRouter({
     },
     // MATRICULA ROUTING
     {
-      path: "/matricula/:idCurso?",
+      path: "/matricula/:idCurso?/:nombreCurso?",
       name: "Matricula",
       component: () => import("../views/matricula/Matricula.vue"),
     },

@@ -7,6 +7,7 @@
     :idCurso="idcurso"
   />
   <div class="container">
+    <h2>Gestion de matricula del curso {{ String(nombre).toLowerCase() }}</h2>
     <button class="btn btn-success m-1" @click="toggleEstudiantesModal()">
       Matricular
     </button>
@@ -66,6 +67,7 @@ import EstudiantesModal from "@/views/components/EstudiantesModal.vue";
 const route = useRoute();
 const router = useRouter();
 const idcurso = route.params.idCurso || 0;
+const nombre = route.params.nombreCurso || "";
 const mostrarModal = ref(false);
 
 const estado = reactive({
