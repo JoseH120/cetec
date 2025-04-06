@@ -73,11 +73,10 @@ const guardarSeccion = async () => {
     formulario.append("TipoTecurso", recurso.tipo);
   }
   // Validando si el recurso es una url o un archivo local.
-  if(recurso.tipo == "enlace"){
+  if (recurso.tipo == "enlace") {
     formulario.append("Url", form.Url);
-  }
-  else if(recurso.tipo == "archivo"){
-    formulario.append("file", file.value)
+  } else if (recurso.tipo == "archivo") {
+    formulario.append("file", file.value);
   }
 
   // Validamos si una seccion esta creandose o editandose
@@ -122,7 +121,7 @@ onUpdated(() => {
         <button class="close-button" id="close-button" @click="closeWindow">
           <i class="fa fa-times icon-x" aria-hidden="true"></i>
         </button>
-        <h2>Leccion</h2>
+        <h2>Seccion</h2>
         <form
           id="Formulario"
           @submit.prevent="guardarSeccion()"
